@@ -404,8 +404,45 @@
 
             // --- URLs de Google Apps Script (¡ACTUALIZA ESTAS!) ---
             // Usa la URL de tu despliegue webapp para las llamadas a Apps Script
-            const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzNdIYoIO_zV8ri0tx7za0slaCdIyWGqMiPrtxWgAkAu3XE9ddaKzKkTuhV9rKNWYunWg/exec'; 
+             const GOOGLE_APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby3VJ2QmVRa4-OSztsbdGyHEQcnYtFa9V63DbUL20ocJ2GsFgmJRNRJQ-_feOebSYQ3Ew/exec";
 
+    async function enviarDatosARegistros(serialsToRegister) {
+        if (serialsToRegister.length === 0) {
+            alert("No hay seriales para registrar.");
+            return false;
+        }
+
+        try {
+            const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    action: "registerSerials",
+                    data: serialsToRegister
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert("¡Datos registrados exitosamente!");
+                return true;
+            } else {
+                alert("Error en el registro: " + result.message);
+                return false;
+            }
+        } catch (error) {
+            console.error("Error al enviar datos:", error);
+            alert("Hubo un problema al conectar con el servidor: " + error.message);
+            return false;
+        }
+    }
             let generatedSerialsInSession = []; // Array para guardar los seriales generados en la sesión actual
 
             // --- Funciones de Utilidad ---
