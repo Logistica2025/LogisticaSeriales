@@ -435,7 +435,7 @@
                 umInput.value = 'Buscando...';
                 
                 // Si no hay material para buscar o la URL no es válida
-                if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === 'https://script.google.com/macros/s/AKfycby3VJ2QmVRa4-OSztsbdGyHEQcnYtFa9V63DbUL20ocJ2GsFgmJRNRJQ-_feOebSYQ3Ew/exec') { // THIS IS A PLACEHOLDER
+                if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') { // THIS IS A PLACEHOLDER
                     descripcionInput.value = '';
                     umInput.value = '';
                     return;
@@ -469,7 +469,7 @@
                 const materialABuscar = materialInput.value;
                 serialManualInput.placeholder = 'Cargando último serial...';
 
-                if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === 'https://script.google.com/macros/s/AKfycby3VJ2QmVRa4-OSztsbdGyHEQcnYtFa9V63DbUL20ocJ2GsFgmJRNRJQ-_feOebSYQ3Ew/exec') { // THIS IS A PLACEHOLDER
+                if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') { // THIS IS A PLACEHOLDER
                     serialManualInput.placeholder = 'Ej: NS270520250001';
                     return;
                 }
