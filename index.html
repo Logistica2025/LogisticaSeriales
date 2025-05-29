@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -645,18 +645,14 @@
                 generateAndSaveButton.textContent = 'Enviando...';
                 generateAndPrintButton.textContent = 'Enviando...';
 
-                try {
-                    const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
-                        method: 'POST', // Usamos POST para enviar datos
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+               try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ action: 'registerSerials', data: completeData }) // Enviar un array de objetos
                     });
 
-                    if (!response.ok) {
-                        throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
-                    }
+                  if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
                     const result = await response.json();
 
