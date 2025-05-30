@@ -615,8 +615,8 @@
             // Función para enviar datos a la hoja de "Registros" (ahora maneja múltiples seriales)
             const enviarDatosARegistros = async (serialsToRegister) => {
                 if (serialsToRegister.length === 0) {
-                    alert('No hay seriales para registrar.');
-                    return false;
+                   alert('No hay seriales para registrar.');
+                   return false;
                 }
 
                 // Validaciones adicionales antes de enviar (por si algo cambió desde la generación)
@@ -648,7 +648,9 @@
                try {
                 const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
                     method: 'POST',
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+          'Accept': 'application/json'
+        },
                         body: JSON.stringify({ action: 'registerSerials', data: completeData }) // Enviar un array de objetos
                     });
 
