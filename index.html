@@ -677,108 +677,96 @@
                 }
             };
 
-            // Función para generar e imprimir PDF
             const generarEImprimirPDF = async (serialsData) => {
-                if (serialsData.length === 0) {
-                    alert('No hay seriales para imprimir.');
-                    return;
-                }
+    if (serialsData.length === 0) {
+        alert('No hay seriales para imprimir.');
+        return;
+    }
 
-                // Importar jsPDF (ya está en el HTML, solo asegurar que la clase esté disponible)
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({
-                    orientation: 'portrait', // Vertical
-                    unit: 'mm',
-                    format: [50, 30] // 50mm ancho x 30mm alto por página (etiqueta)
-                });
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [50, 30]
+    });
 
-                // Helper para dibujar un SVG en el PDF
-                const addSvgToPdf = (doc, svgElement, x, y, width, height) => {
-                    const serializer = new XMLSerializer();
-                    const svgString = serializer.serializeToString(svgElement);
-                    return new Promise((resolve) => {
-                        // jsPDF addImage does not directly support SVG strings, typically needs conversion
-                        // Using a simple base64 encode, but a more robust solution might use canvg or similar
-                        // For direct JsPDF SVG support, consider using a newer version or a different approach if this fails.
-                        doc.addImage(
-                            `data:image/svg+xml;base64,${btoa(svgString)}`,
-                            'SVG', // Type is important for jsPDF to try and interpret
-                            x,
-                            y,
-                            width,
-                            height,
-                            '', // Alias
-                            'FAST' // Compression
-                        );
-                        resolve(); // Resolve immediately as addImage is synchronous
-                    });
-                };
+    const addSvgToPdf = (doc, svgElement, x, y, width, height) => {
+        const serializer = new XMLSerializer();
+        const svgString = serializer.serializeToString(svgElement);
+        return new Promise((resolve) => {
+            doc.addImage(
+                `data:image/svg+xml;base64,${btoa(svgString)}`,
+                'SVG',
+                x,
+                y,
+                width,
+                height,
+                '',
+                'FAST'
+            );
+            resolve();
+        });
+    };
 
+    for (let i = 0; i < serialsData.length; i++) {
+        const item = serialsData[i];
 
-                for (let i = 0; i < serialsData.length; i++) {
-                    const item = serialsData[i];
-                    
-                    // Crear un div temporal para generar el SVG del código de barras para cada serial
-                    // Es CRUCIAL que el SVG se genere en el DOM para JsBarcode
-                    const tempDiv = document.createElement('div');
-                    // Ocultar el div temporal para que no afecte la presentación visual
-                    tempDiv.style.cssText = 'position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden;';
-                    const tempSvg = document.createElement('svg');
-                    tempSvg.dataset.serial = item.serial; // Asociar el serial al SVG para JsBarcode
-                    tempDiv.appendChild(tempSvg);
-                    document.body.appendChild(tempDiv); // Debe estar en el DOM para que JsBarcode funcione correctamente
+        const tempDiv = document.createElement('div');
+        tempDiv.style.cssText = 'position: absolute; left: -9999px; top: -9999px; width: 1px; height: 1px; overflow: hidden;';
+        const tempSvg = document.createElement('svg');
+        tempSvg.dataset.serial = item.serial;
+        tempDiv.appendChild(tempSvg);
+        document.body.appendChild(tempDiv);
 
-                    renderBarcodeSvg(tempSvg, item.serial); // Renderizar el SVG del código de barras
-                    
-                    // jsPDF addImage is generally synchronous for SVG (when type is SVG)
-                    // If JsBarcode is too slow or the SVG isn't fully rendered, a small timeout or promise could be added here.
-                    // For now, assume it's fast enough.
+        renderBarcodeSvg(tempSvg, item.serial);
 
-                    // Add new page for each label except the first one
-                    if (i > 0) {
-                        doc.addPage();
-                    }
+        if (i > 0) {
+            doc.addPage();
+        }
 
-                    // Contenido de la etiqueta: 50mm x 30mm
-                    const page_width = doc.internal.pageSize.getWidth(); // 50mm
-                    const page_height = doc.internal.pageSize.getHeight(); // 30mm
+        const page_width = doc.internal.pageSize.getWidth();
+        const page_height = doc.internal.pageSize.getHeight();
 
-                    // Material (parte superior central)
-                    doc.setFontSize(10);
-                    doc.text(`Material: ${item.material}`, page_width / 2, 4, { align: 'center' }); // 4mm desde arriba
+        doc.setFontSize(10);
+        doc.text(`Material: ${item.material}`, page_width / 2, 4, { align: 'center' });
 
-                    // Descripción (debajo del Material)
-                    doc.setFontSize(7);
-                    // Asegúrate de que la descripción no sea demasiado larga o maneja el "word-wrap"
-                    doc.text(item.descripcion, page_width / 2, 8, { align: 'center' }); // 8mm desde arriba
+        doc.setFontSize(7);
+        doc.text(item.descripcion, page_width / 2, 8, { align: 'center' });
 
-                    // Código de barras (centrado)
-                    // Calcula las dimensiones y posición para centrar el código de barras
-                    const barcode_width_mm = 40; // Ancho deseado del código de barras en mm
-                    const barcode_height_mm = 12; // Alto deseado del código de barras en mm
-                    const barcode_x = (page_width - barcode_width_mm) / 2;
-                    const barcode_y = 10; // Posición Y del código de barras
+        const barcode_width_mm = 40;
+        const barcode_height_mm = 12;
+        const barcode_x = (page_width - barcode_width_mm) / 2;
+        const barcode_y = 10;
 
-                    await addSvgToPdf(doc, tempSvg, barcode_x, barcode_y, barcode_width_mm, barcode_height_mm);
+        await addSvgToPdf(doc, tempSvg, barcode_x, barcode_y, barcode_width_mm, barcode_height_mm);
 
-                    // Serial (debajo del código de barras)
-                    doc.setFontSize(9);
-                    doc.text(item.serial, page_width / 2, 26, { align: 'center' }); // 26mm desde arriba
+        doc.setFontSize(9);
+        doc.text(item.serial, page_width / 2, 26, { align: 'center' });
 
-                    // Limpiar el SVG temporal
-                    document.body.removeChild(tempDiv);
-                }
-                
-                // Abre el PDF en una nueva pestaña
-                // Es crucial que esto se haga en una interacción directa del usuario o puede ser bloqueado
-                try {
-                    window.open(doc.output('bloburl'), '_blank');
-                } catch (e) {
-                    console.error("Error al abrir la ventana de impresión/PDF:", e);
-                    alert("El navegador bloqueó la ventana de impresión. Por favor, revisa la configuración de ventanas emergentes o inténtalo de nuevo.");
-                }
+        document.body.removeChild(tempDiv);
+    }
+
+    // 💡 NUEVO: Usar Blob para abrir el PDF e imprimir automáticamente
+    try {
+        const blob = doc.output('blob');
+        const blobUrl = URL.createObjectURL(blob);
+
+        const printWindow = window.open(blobUrl, '_blank');
+
+        if (printWindow) {
+            printWindow.onload = () => {
+                printWindow.focus();
+                printWindow.print();
             };
-
+        } else {
+            alert("El navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para esta página.");
+        }
+    } catch (e) {
+        console.error("Error al abrir la ventana de impresión/PDF:", e);
+        alert("El navegador bloqueó la ventana de impresión. Por favor, revisa la configuración de ventanas emergentes o inténtalo de nuevo.");
+    }
+};
+            
             // Función para limpiar el formulario después de generar/imprimir
             const resetForm = () => {
                 nomenclaturaInput.value = '';
