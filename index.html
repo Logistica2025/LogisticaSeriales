@@ -695,32 +695,68 @@
         generateAndPrintButton.textContent = 'Enviando...';
 
         try {
-          // Usar google.script.run para comunicación con Apps Script
-          const result = await new Promise((resolve, reject) => {
-            google.script.run
-              .withSuccessHandler(resolve)
-              .withFailureHandler(reject)
-              .registerSerials(completeData); // Llama a la función en Apps Script
-          });
 
-          if (result.success) {
-            alert('¡Datos registrados exitosamente en la hoja de Registros!');
-            return true;
-          } else {
-            alert('Error al registrar los datos: ' + result.message);
-            return false;
-          }
-        } catch (error) {
-          console.error('Error al enviar datos:', error);
-          alert('Hubo un problema al conectar con el servidor para registrar los datos. Intenta de nuevo más tarde. Detalles: ' + error.message);
-          return false;
-        } finally {
-          generateAndSaveButton.disabled = false;
-          generateAndPrintButton.disabled = false;
-          generateAndSaveButton.textContent = 'Generar y Guardar';
-          generateAndPrintButton.textContent = 'Generar e Imprimir';
-        }
-      };
+                const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
+
+                    method: 'POST',
+
+                    headers: {
+
+          'Accept': 'application/json'
+
+        },
+
+                        body: JSON.stringify({ action: 'registerSerials', data: completeData }) // Enviar un array de objetos
+
+                    });
+
+
+
+                  if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+
+
+
+                    const result = await response.json();
+
+
+
+                    if (result.success) {
+
+                        alert('¡Datos registrados exitosamente en la hoja de Registros!');
+
+                        return true;
+
+                    } else {
+
+                        alert('Error al registrar los datos: ' + result.message);
+
+                        return false;
+
+                    }
+
+                } catch (error) {
+
+                    console.error('Error al enviar datos:', error);
+
+                    alert('Hubo un problema al conectar con el servidor para registrar los datos. Intenta de nuevo más tarde. Detalles: ' + error.message);
+
+                    return false;
+
+                } finally {
+
+                    generateAndSaveButton.disabled = false;
+
+                    generateAndPrintButton.disabled = false;
+
+                    generateAndSaveButton.textContent = 'Generar y Guardar';
+
+                    generateAndPrintButton.textContent = 'Generar e Imprimir';
+
+                }
+
+            };
+
+
 
       // MODIFICACIÓN PRINCIPAL AQUÍ: generarEImprimirPDF usando html2canvas y jsPDF
       const generarEImprimirPDF = async (serialsData) => {
