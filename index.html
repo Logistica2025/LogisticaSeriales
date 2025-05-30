@@ -410,79 +410,137 @@
         buscarUltimoSerial(); // Buscar el último serial generado para este material
       };
 
-      // Función para buscar Descripción y UM en Google Sheets
-      const buscarDatosMaterial = async () => {
-        const materialABuscar = materialInput.value;
+          // Función para buscar Descripción y UM en Google Sheets
 
-        descripcionInput.value = 'Buscando...';
-        umInput.value = 'Buscando...';
+            const buscarDatosMaterial = async () => {
 
-        // Si no hay material para buscar o la URL no es válida
-        if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') {
-          descripcionInput.value = '';
-          umInput.value = '';
-          return;
-        }
+                const materialABuscar = materialInput.value;
 
-        try {
-          // Usar google.script.run para comunicación con Apps Script
-          google.script.run
-            .withSuccessHandler(data => {
-              if (data && data.descripcion) {
-                descripcionInput.value = data.descripcion;
-                umInput.value = data.um || 'N/A';
-              } else {
-                descripcionInput.value = 'Descripción no encontrada.';
-                umInput.value = 'UM no encontrada.';
-              }
-            })
-            .withFailureHandler(error => {
-              console.error('Error al buscar datos del material:', error);
-              descripcionInput.value = 'Error al cargar la descripción.';
-              umInput.value = 'Error al cargar UM.';
-            })
-            .buscarProductoEnHoja(materialABuscar); // Llama a la función en Apps Script
-        } catch (error) {
-          console.error('Error al iniciar la llamada a Apps Script para buscar material:', error);
-          descripcionInput.value = 'Error interno del navegador.';
-          umInput.value = '';
-        }
-      };
+                
 
-      // Función para buscar el último serial registrado para el Material actual
-      const buscarUltimoSerial = async () => {
-        const materialABuscar = materialInput.value;
-        serialManualInput.placeholder = 'Cargando último serial...';
+                descripcionInput.value = 'Buscando...';
 
-        if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') {
-          serialManualInput.placeholder = 'Ej: NS270520250001';
-          return;
-        }
+                umInput.value = 'Buscando...';
 
-        try {
-          // Usar google.script.run para comunicación con Apps Script
-          google.script.run
-            .withSuccessHandler(data => {
-              if (data && data.lastSerial) {
-                serialManualInput.value = data.lastSerial;
-                serialManualInput.placeholder = `Último: ${data.lastSerial}`;
-              } else {
-                serialManualInput.value = '';
-                serialManualInput.placeholder = 'Ej: NS270520250001'; // O ningún serial previo
-              }
-            })
-            .withFailureHandler(error => {
-              console.error('Error al buscar último serial:', error);
-              serialManualInput.value = '';
-              serialManualInput.placeholder = 'Error al cargar último serial.';
-            })
-            .getUltimoSerialPorMaterial(materialABuscar); // Llama a la función en Apps Script
-        } catch (error) {
-          console.error('Error al iniciar la llamada a Apps Script para último serial:', error);
-          serialManualInput.value = '';
-          serialManualInput.placeholder = 'Error interno del navegador.';
-        }
-      };
+                
+
+                // Si no hay material para buscar o la URL no es válida
+
+                if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') { // THIS IS A PLACEHOLDER
+
+                    descripcionInput.value = '';
+
+                    umInput.value = '';
+
+                    return;
+
+                }
+
+
+
+                try {
+
+                    const response = await fetch(`${GOOGLE_APPS_SCRIPT_WEB_APP_URL}?action=searchMaterial&material=${encodeURIComponent(materialABuscar)}`);
+
+                    
+
+                    if (!response.ok) {
+
+                        throw new Error(`Error HTTP: ${response.status}`);
+
+                    }
+
+
+
+                    const data = await response.json();
+
+
+
+                    if (data && data.descripcion) {
+
+                        descripcionInput.value = data.descripcion;
+
+                        umInput.value = data.um || 'N/A';
+
+                    } else {
+
+                        descripcionInput.value = 'Descripción no encontrada.';
+
+                        umInput.value = 'UM no encontrada.';
+
+                    }
+
+                } catch (error) {
+
+                    console.error('Error al buscar datos del material:', error);
+
+                    descripcionInput.value = 'Error al cargar la descripción.';
+
+                    umInput.value = 'Error al cargar UM.';
+
+                }
+
+            };
+
+
+
+            // Función para buscar el último serial registrado para el Material actual
+
+            const buscarUltimoSerial = async () => {
+
+                const materialABuscar = materialInput.value;
+
+                serialManualInput.placeholder = 'Cargando último serial...';
+
+
+
+                if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') { // THIS IS A PLACEHOLDER
+
+                    serialManualInput.placeholder = 'Ej: NS270520250001';
+
+                    return;
+
+                }
+
+
+
+                try {
+
+                    const response = await fetch(`${GOOGLE_APPS_SCRIPT_WEB_APP_URL}?action=getLastSerial&material=${encodeURIComponent(materialABuscar)}`);
+
+                    if (!response.ok) {
+
+                        throw new Error(`Error HTTP: ${response.status}`);
+
+                    }
+
+                    const data = await response.json();
+
+                    if (data && data.lastSerial) {
+
+                        serialManualInput.value = data.lastSerial;
+
+                        serialManualInput.placeholder = `Último: ${data.lastSerial}`;
+
+                    } else {
+
+                        serialManualInput.value = '';
+
+                        serialManualInput.placeholder = 'Ej: NS270520250001'; // O ningún serial previo
+
+                    }
+
+                } catch (error) {
+
+                    console.error('Error al buscar último serial:', error);
+
+                    serialManualInput.value = '';
+
+                    serialManualInput.placeholder = 'Error al cargar último serial.';
+
+                }
+
+            };
 
       // Función para generar una única etiqueta HTML
       const createLabelHtml = (material, descripcion, um, serial) => {
