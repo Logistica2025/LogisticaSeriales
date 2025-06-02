@@ -630,7 +630,7 @@
             }
         };
 
-      // MODIFICACIÓN PRINCIPAL AQUÍ: generarEImprimirPDF usando html2canvas y jsPDF
+   // MODIFICACIÓN PRINCIPAL AQUÍ: generarEImprimirPDF usando html2canvas y jsPDF
     const generarEImprimirPDF = async (serialsData) => {
         if (serialsData.length === 0) {
             alert('No hay seriales para imprimir.');
@@ -648,6 +648,11 @@
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
 
+        // **NUEVO: Offset para mover la etiqueta hacia arriba (en mm)**
+        // Un valor negativo moverá hacia arriba, un valor positivo moverá hacia abajo.
+        // Puedes ajustar este valor (ej. -2 para 2mm arriba, -5 para 5mm arriba, etc.)
+        const yOffset = -30; // Ajusta este valor en milímetros (mm) según necesites
+
         for (let i = 0; i < serialsData.length; i++) {
             const item = serialsData[i];
 
@@ -657,8 +662,8 @@
                 position: absolute;
                 left: -9999px;
                 top: -9999px;
-                width: 120mm; /* El tamaño de la etiqueta para html2canvas */
-                height: 90mm;
+                width: 150mm; /* El tamaño de la etiqueta para html2canvas */
+                height: 70mm;
                 padding: 2mm; /* Replicar el padding del CSS de impresión */
                 box-sizing: border-box;
                 background-color: #fff; /* Asegurar fondo blanco */
@@ -670,10 +675,10 @@
                 font-family: Arial, sans-serif; /* Ayuda a que html2canvas renderice las fuentes */
             `;
             tempLabelDiv.innerHTML = `
-                <h1 style="font-size: 12px; margin: 0; text-align: center; line-height: 1;">${item.material}</h4>
-                <h1 style="font-size: 12px; margin: 0; text-align: center; line-height: 1;">${item.descripcion}</h5>
+                <h1 style="font-size: 10px; margin: 0; text-align: center; line-height: 1;">${item.material}</h1>
+                <h1 style="font-size: 7px; margin: 0; text-align: center; line-height: 1;">${item.descripcion}</h1>
                 <svg id="tempBarcodeSvg-${i}" style="width: 90%; height: 12mm; margin: 1mm 0; display: block;"></svg>
-                <h1 style="font-weight: bold; font-size: 12px; word-break: break-all; margin: 0; text-align: center; line-height: 1;">${item.serial}</p>
+                <h1 style="font-weight: bold; font-size: 9px; word-break: break-all; margin: 0; text-align: center; line-height: 1;">${item.serial}</h1>
             `;
             document.body.appendChild(tempLabelDiv);
 
@@ -711,7 +716,10 @@
 
             // Calcular las coordenadas para centrar la imagen en la página
             const x = (pageWidth - scaledWidth) / 2;
-            const y = (pageHeight - scaledHeight) / 2;
+            let y = (pageHeight - scaledHeight) / 2; // 'let' para poder modificarla
+
+            // **Aplicar el offset vertical**
+            y += yOffset; // Suma el offset (si es negativo, moverá hacia arriba)
 
             // Añadir la imagen al PDF (la imagen del canvas)
             doc.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
@@ -744,7 +752,7 @@
         }
     };
 
-
+   
         // Función para limpiar el formulario después de generar/imprimir
         const resetForm = () => {
             // Eliminados: nomenclaturaInput.value, codigoInput.value
