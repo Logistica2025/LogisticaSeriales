@@ -262,681 +262,574 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Generador de Seriales y Códigos de Barras</h1>
+    <div class="container">
+        <h1>Generador de Seriales y Códigos de Barras</h1>
 
-    <div class="tab-buttons">
-      <button class="tab-button active" data-tab="generate">Generar Etiquetas</button>
-      <button class="tab-button" data-tab="search">Buscar y Reimprimir</button>
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="generate">Generar Etiquetas</button>
+            <button class="tab-button" data-tab="search">Buscar y Reimprimir</button>
+        </div>
+
+        <div id="generate" class="tab-content active">
+            <div class="form-group">
+                <label for="material">Material:</label>
+                <input type="text" id="material" placeholder="Ingresa el número de material">
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion">Descripción:</label>
+                <input type="text" id="descripcion" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="um">UM:</label>
+                <input type="text" id="um" readonly>
+            </div>
+
+            <h3>Generación de Seriales:</h3>
+            <p>Elige una de las siguientes opciones para generar los seriales:</p>
+
+            <div class="form-group">
+                <label for="serialManual">Serial Individual:</label>
+                <input type="text" id="serialManual" placeholder="Ej: NS270520250001">
+            </div>
+
+            <div class="form-group">
+                <label for="serialesPegados">Pegar Seriales (uno por línea):</label>
+                <textarea id="serialesPegados" rows="5" placeholder="Pega aquí tus seriales, uno por línea"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="correlativoInicio">Serial Correlativo - Inicio:</label>
+                <input type="text" id="correlativoInicio" placeholder="Ej: NS270520250001">
+            </div>
+            <div class="form-group">
+                <label for="correlativoCantidad">Serial Correlativo - Cantidad:</label>
+                <input type="number" id="correlativoCantidad" value="1" min="1" max="1000">
+            </div>
+
+            <div class="button-group">
+                <button id="generateAndSaveButton" class="action-button btn-primary">Generar y Guardar</button>
+                <button id="generateAndPrintButton" class="action-button btn-success">Generar e Imprimir</button>
+            </div>
+
+            <div class="labels-preview">
+                <h2>Previsualización de Etiquetas</h2>
+                <div id="labelsPreviewContainer" class="labels-grid">
+                </div>
+                <h3>Seriales Generados (para copiar):</h3>
+                <textarea id="serialsOutput" readonly></textarea>
+            </div>
+        </div>
+
+        <div id="search" class="tab-content">
+            <div class="form-group">
+                <label for="searchSerialInput">Buscar por Serial:</label>
+                <input type="text" id="searchSerialInput" placeholder="Ingresa un serial completo">
+            </div>
+            <div class="form-group">
+                <label for="searchMaterialInput">Buscar por Material:</label>
+                <input type="text" id="searchMaterialInput" placeholder="Ingresa el número de material">
+            </div>
+            <div class="button-group">
+                <button id="searchButton" class="action-button btn-info">Buscar</button>
+            </div>
+            <div class="search-results">
+                <h2>Resultados de la Búsqueda</h2>
+                <ul id="searchResultList">
+                </ul>
+            </div>
+        </div>
     </div>
-
-    <div id="generate" class="tab-content active">
-      <div class="form-group">
-        <label for="nomenclatura">Nomenclatura (0, 1, 2, 3 o 5):</label>
-        <select id="nomenclatura">
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="5">5</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="codigo">Código (1 a 5 dígitos):</label>
-        <input type="number" id="codigo" placeholder="Ej. 101" min="1" max="99999" oninput="if(this.value.length > 5) this.value = this.value.slice(0, 5);">
-      </div>
-
-      <div class="form-group">
-        <label for="material">Material:</label>
-        <input type="text" id="material" readonly>
-      </div>
-
-      <div class="form-group">
-        <label for="descripcion">Descripción:</label>
-        <input type="text" id="descripcion" readonly>
-      </div>
-
-      <div class="form-group">
-        <label for="um">UM:</label>
-        <input type="text" id="um" readonly>
-      </div>
-
-      <h3>Generación de Seriales:</h3>
-      <p>Elige una de las siguientes opciones para generar los seriales:</p>
-
-      <div class="form-group">
-        <label for="serialManual">Serial Individual:</label>
-        <input type="text" id="serialManual" placeholder="Ej: NS270520250001">
-      </div>
-
-      <div class="form-group">
-        <label for="serialesPegados">Pegar Seriales (uno por línea):</label>
-        <textarea id="serialesPegados" rows="5" placeholder="Pega aquí tus seriales, uno por línea"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="correlativoInicio">Serial Correlativo - Inicio:</label>
-        <input type="text" id="correlativoInicio" placeholder="Ej: NS270520250001">
-      </div>
-      <div class="form-group">
-        <label for="correlativoCantidad">Serial Correlativo - Cantidad:</label>
-        <input type="number" id="correlativoCantidad" value="1" min="1" max="1000">
-      </div>
-
-      <div class="button-group">
-        <button id="generateAndSaveButton" class="action-button btn-primary">Generar y Guardar</button>
-        <button id="generateAndPrintButton" class="action-button btn-success">Generar e Imprimir</button>
-      </div>
-
-      <div class="labels-preview">
-        <h2>Previsualización de Etiquetas</h2>
-        <div id="labelsPreviewContainer" class="labels-grid">
-          </div>
-        <h3>Seriales Generados (para copiar):</h3>
-        <textarea id="serialsOutput" readonly></textarea>
-      </div>
-    </div>
-
-    <div id="search" class="tab-content">
-      <div class="form-group">
-        <label for="searchSerialInput">Buscar por Serial:</label>
-        <input type="text" id="searchSerialInput" placeholder="Ingresa un serial completo">
-      </div>
-      <div class="form-group">
-        <label for="searchMaterialInput">Buscar por Material:</label>
-        <input type="text" id="searchMaterialInput" placeholder="Ingresa el número de material">
-      </div>
-      <div class="button-group">
-        <button id="searchButton" class="action-button btn-info">Buscar</button>
-      </div>
-      <div class="search-results">
-        <h2>Resultados de la Búsqueda</h2>
-        <ul id="searchResultList">
-          </ul>
-      </div>
-    </div>
-  </div>
-
-  <script>
+<script>
     // --- JAVASCRIPT INCORPORADO ---
     document.addEventListener('DOMContentLoaded', () => {
-      // --- Referencias del DOM para la sección de Generación ---
-      const nomenclaturaInput = document.getElementById('nomenclatura');
-      const codigoInput = document.getElementById('codigo');
-      const materialInput = document.getElementById('material');
-      const descripcionInput = document.getElementById('descripcion');
-      const umInput = document.getElementById('um');
-      const serialManualInput = document.getElementById('serialManual');
-      const serialesPegadosInput = document.getElementById('serialesPegados');
-      const correlativoInicioInput = document.getElementById('correlativoInicio');
-      const correlativoCantidadInput = document.getElementById('correlativoCantidad');
-      const generateAndSaveButton = document.getElementById('generateAndSaveButton');
-      const generateAndPrintButton = document.getElementById('generateAndPrintButton');
-      const labelsPreviewContainer = document.getElementById('labelsPreviewContainer');
-      const serialsOutput = document.getElementById('serialsOutput'); // Para mostrar seriales generados en sesión
-
-      // --- Referencias del DOM para la sección de Búsqueda ---
-      const searchSerialInput = document.getElementById('searchSerialInput');
-      const searchMaterialInput = document.getElementById('searchMaterialInput');
-      const searchButton = document.getElementById('searchButton');
-      const searchResultList = document.getElementById('searchResultList');
-
-      // --- Referencias de las Pestañas ---
-      const tabButtons = document.querySelectorAll('.tab-button');
-      const tabContents = document.querySelectorAll('.tab-content');
-
-      // --- URL de Google Apps Script (¡ACTUALIZA ESTA!) ---
-      const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8MRwE-QRucfIf1gxTmrQ2TrdYisRZzncWaoQLaYy1m2TYutW6iQ6oeVFA-vOh00BIuQ/exec';
-
-      let generatedSerialsInSession = []; // Array para guardar los seriales generados en la sesión actual
-
-      // --- Funciones de Utilidad ---
-
-      // Función para calcular y actualizar el campo Material
-      const updateMaterial = () => {
-        const nomenclatura = parseInt(nomenclaturaInput.value, 10);
-        const codigo = parseInt(codigoInput.value, 10);
-
-        if (!isNaN(nomenclatura) && nomenclaturaInput.value !== "" &&
-            !isNaN(codigo) && codigoInput.value !== "" && codigo >= 1 && codigo <= 99999) { // Código entre 1 y 5 dígitos
-
-          const materialCalculado = (nomenclatura * 1000000000) + codigo;
-          materialInput.value = String(materialCalculado);
-        } else {
-          materialInput.value = ''; // Limpiar si los campos no son válidos o están vacíos
-        }
-        buscarDatosMaterial();
-        buscarUltimoSerial(); // Buscar el último serial generado para este material
-      };
-
-          // Función para buscar Descripción y UM en Google Sheets
-
-            const buscarDatosMaterial = async () => {
-
-                const materialABuscar = materialInput.value;
-
-                
-
-                descripcionInput.value = 'Buscando...';
-
-                umInput.value = 'Buscando...';
-
-                
-
-                // Si no hay material para buscar o la URL no es válida
-
-                if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') { // THIS IS A PLACEHOLDER
-
-                    descripcionInput.value = '';
-
-                    umInput.value = '';
-
-                    return;
-
-                }
-
-
-
-                try {
-
-                    const response = await fetch(`${GOOGLE_APPS_SCRIPT_WEB_APP_URL}?action=searchMaterial&material=${encodeURIComponent(materialABuscar)}`);
-
-                    
-
-                    if (!response.ok) {
-
-                        throw new Error(`Error HTTP: ${response.status}`);
-
-                    }
-
-
-
-                    const data = await response.json();
-
-
-
-                    if (data && data.descripcion) {
-
-                        descripcionInput.value = data.descripcion;
-
-                        umInput.value = data.um || 'N/A';
-
-                    } else {
-
-                        descripcionInput.value = 'Descripción no encontrada.';
-
-                        umInput.value = 'UM no encontrada.';
-
-                    }
-
-                } catch (error) {
-
-                    console.error('Error al buscar datos del material:', error);
-
-                    descripcionInput.value = 'Error al cargar la descripción.';
-
-                    umInput.value = 'Error al cargar UM.';
-
-                }
-
-            };
-
-
-
-            // Función para buscar el último serial registrado para el Material actual
-
-            const buscarUltimoSerial = async () => {
-
-                const materialABuscar = materialInput.value;
-
-                serialManualInput.placeholder = 'Cargando último serial...';
-
-
-
-                if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') { // THIS IS A PLACEHOLDER
-
-                    serialManualInput.placeholder = 'Ej: NS270520250001';
-
-                    return;
-
-                }
-
-
-
-                try {
-
-                    const response = await fetch(`${GOOGLE_APPS_SCRIPT_WEB_APP_URL}?action=getLastSerial&material=${encodeURIComponent(materialABuscar)}`);
-
-                    if (!response.ok) {
-
-                        throw new Error(`Error HTTP: ${response.status}`);
-
-                    }
-
-                    const data = await response.json();
-
-                    if (data && data.lastSerial) {
-
-                        serialManualInput.value = data.lastSerial;
-
-                        serialManualInput.placeholder = `Último: ${data.lastSerial}`;
-
-                    } else {
-
-                        serialManualInput.value = '';
-
-                        serialManualInput.placeholder = 'Ej: NS270520250001'; // O ningún serial previo
-
-                    }
-
-                } catch (error) {
-
-                    console.error('Error al buscar último serial:', error);
-
-                    serialManualInput.value = '';
-
-                    serialManualInput.placeholder = 'Error al cargar último serial.';
-
-                }
-
-            };
-
-      // Función para generar una única etiqueta HTML
-      const createLabelHtml = (material, descripcion, um, serial) => {
-        const labelDiv = document.createElement('div');
-        labelDiv.className = 'label-container';
-        labelDiv.innerHTML = `
-          <h4>${material}</h4>
-          <h5>${descripcion}</h5>
-          <svg class="barcode-svg" data-serial="${serial}"></svg>
-          <p class="serial-text">${serial}</p>
-        `;
-        return labelDiv;
-      };
-
-      // Función para renderizar el código de barras en un SVG
-      const renderBarcodeSvg = (svgElement, serialValue) => {
-        try {
-          JsBarcode(svgElement, serialValue, {
-            format: "CODE128",
-            displayValue: false, // No mostrar el texto del serial debajo del código
-            lineColor: "#000",
-            width: 2,
-            height: 50,
-            margin: 0, // Sin márgenes adicionales
-            background: "#fff"
-          });
-        } catch (e) {
-          console.error("Error al generar el código de barras para serial:", serialValue, e);
-          svgElement.innerHTML = `<p style="color: red; font-size: 7px; text-align: center;">Error BC: ${serialValue}</p>`;
-        }
-      };
-
-      // Función principal para generar seriales y previsualizar etiquetas
-      const generarSerialesYEtiquetas = () => {
-        const material = materialInput.value;
-        const descripcion = descripcionInput.value;
-        const um = umInput.value;
-
-        // Validar que Material, Descripción y UM estén cargados
-        if (!material || !descripcion || !um ||
-          descripcion.includes('Buscando') || descripcion.includes('Error')) {
-          // alert('Por favor, asegúrate de que el Material, Descripción y UM estén cargados correctamente antes de generar seriales.');
-          labelsPreviewContainer.innerHTML = '';
-          serialsOutput.textContent = '';
-          generatedSerialsInSession = [];
-          return [];
-        }
-
-        labelsPreviewContainer.innerHTML = ''; // Limpiar previsualización anterior
-        const serialsToProcess = [];
-        generatedSerialsInSession = []; // Limpiar la lista de seriales generados en sesión
-
-        // 1. Serial Individual
-        const serialManual = serialManualInput.value.trim();
-        if (serialManual) {
-          serialsToProcess.push(serialManual);
-        }
-
-        // 2. Seriales Pegados
-        const serialesPegados = serialesPegadosInput.value.trim();
-        if (serialesPegados) {
-          const parsedSerials = serialesPegados.split('\n').map(s => s.trim()).filter(s => s !== '');
-          serialsToProcess.push(...parsedSerials);
-        }
-
-        // 3. Seriales Correlativos
-        const correlativoInicio = correlativoInicioInput.value.trim();
-        const correlativoCantidad = parseInt(correlativoCantidadInput.value, 10);
-
-        if (correlativoInicio && correlativoCantidad > 0) {
-          // Lógica para extraer la parte numérica final y el prefijo/sufijo
-          const match = correlativoInicio.match(/^(.*?)([0-9]+)([^0-9]*)$/);
-          if (match) {
-            const prefix = match[1];
-            let startNumber = parseInt(match[2], 10);
-            const numDigits = match[2].length;
-            const suffix = match[3];
-
-            for (let i = 0; i < correlativoCantidad; i++) {
-              const currentNumber = (startNumber + i).toString().padStart(numDigits, '0');
-              serialsToProcess.push(`${prefix}${currentNumber}${suffix}`);
+        // --- Referencias del DOM para la sección de Generación ---
+        // Eliminados: nomenclaturaInput, codigoInput
+        const materialInput = document.getElementById('material'); // Este campo ahora será de entrada directa
+        const descripcionInput = document.getElementById('descripcion');
+        const umInput = document.getElementById('um');
+        const serialManualInput = document.getElementById('serialManual');
+        const serialesPegadosInput = document.getElementById('serialesPegados');
+        const correlativoInicioInput = document.getElementById('correlativoInicio');
+        const correlativoCantidadInput = document.getElementById('correlativoCantidad');
+        const generateAndSaveButton = document.getElementById('generateAndSaveButton');
+        const generateAndPrintButton = document.getElementById('generateAndPrintButton');
+        const labelsPreviewContainer = document.getElementById('labelsPreviewContainer');
+        const serialsOutput = document.getElementById('serialsOutput'); // Para mostrar seriales generados en sesión
+
+        // --- Referencias del DOM para la sección de Búsqueda ---
+        const searchSerialInput = document.getElementById('searchSerialInput');
+        const searchMaterialInput = document.getElementById('searchMaterialInput');
+        const searchButton = document.getElementById('searchButton');
+        const searchResultList = document.getElementById('searchResultList');
+
+        // --- Referencias de las Pestañas ---
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // --- URL de Google Apps Script (¡ACTUALIZA ESTA!) ---
+        const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8MRwE-QRucfIf1gxTmrQ2TrdYisRZzncWaoQLaYy1m2TYutW6iQ6oeVFA-vOh00BIuQ/exec'; // Asegúrate de que esta URL sea la correcta y esté desplegada.
+
+        let generatedSerialsInSession = []; // Array para guardar los seriales generados en la sesión actual
+
+        // --- Funciones de Utilidad ---
+
+        // Función para actualizar los datos de Material, Descripción y UM.
+        // Ahora solo dispara la búsqueda de datos del material.
+        const updateMaterial = () => {
+            buscarDatosMaterial();
+            buscarUltimoSerial(); // Buscar el último serial generado para este material
+            generarSerialesYEtiquetas(); // Para refrescar la previsualización si el material cambia
+        };
+
+        // Función para buscar Descripción y UM en Google Sheets
+        const buscarDatosMaterial = async () => {
+            const materialABuscar = materialInput.value.trim();
+
+            if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') {
+                descripcionInput.value = '';
+                umInput.value = '';
+                return;
             }
-          } else {
-            alert('El serial inicial para el correlativo no tiene un patrón numérico reconocible. Por favor, asegúrate de que termine con números (ej. NS270520250001).');
-            // Retornar [] para evitar procesar seriales incorrectos
-            return [];
-          }
-        }
 
-        if (serialsToProcess.length === 0) {
-          // alert('No se ha introducido ningún serial para generar. Por favor, usa una de las opciones.');
-          return [];
-        }
+            descripcionInput.value = 'Buscando...';
+            umInput.value = 'Buscando...';
 
-        // Eliminar duplicados si es necesario (opcional, dependiendo de la lógica de negocio)
-        const uniqueSerials = [...new Set(serialsToProcess)];
+            try {
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_WEB_APP_URL}?action=searchMaterial&material=${encodeURIComponent(materialABuscar)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
 
-        // Generar previsualización y registrar para la sesión
-        uniqueSerials.forEach(serial => {
-          const labelHtml = createLabelHtml(material, descripcion, um, serial);
-          labelsPreviewContainer.appendChild(labelHtml);
-          generatedSerialsInSession.push({
-            material: material,
-            descripcion: descripcion,
-            um: um,
-            serial: serial
-          });
-        });
+                const data = await response.json();
 
-        // Renderizar todos los códigos de barras después de que los SVG estén en el DOM
-        labelsPreviewContainer.querySelectorAll('.barcode-svg').forEach(svg => {
-          renderBarcodeSvg(svg, svg.dataset.serial);
-        });
+                if (data && data.descripcion) {
+                    descripcionInput.value = data.descripcion;
+                    umInput.value = data.um || 'N/A';
+                } else {
+                    descripcionInput.value = 'Descripción no encontrada.';
+                    umInput.value = 'UM no encontrada.';
+                }
+            } catch (error) {
+                console.error('Error al buscar datos del material:', error);
+                descripcionInput.value = 'Error al cargar la descripción.';
+                umInput.value = 'Error al cargar UM.';
+            }
+        };
 
-        // Mostrar seriales generados en el área de texto
-        serialsOutput.textContent = uniqueSerials.join('\n');
+        // Función para buscar el último serial registrado para el Material actual
+        const buscarUltimoSerial = async () => {
+            const materialABuscar = materialInput.value.trim();
+            serialManualInput.placeholder = 'Cargando último serial...';
 
-        return generatedSerialsInSession; // Retorna los seriales con sus datos completos
-      };
+            if (!materialABuscar || GOOGLE_APPS_SCRIPT_WEB_APP_URL === '') {
+                serialManualInput.placeholder = 'Ej: NS270520250001';
+                return;
+            }
 
-      // Función para enviar datos a la hoja de "Registros" (ahora maneja múltiples seriales)
-      const enviarDatosARegistros = async (serialsToRegister) => {
-        if (serialsToRegister.length === 0) {
-          alert('No hay seriales para registrar.');
-          return false;
-        }
+            try {
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_WEB_APP_URL}?action=getLastSerial&material=${encodeURIComponent(materialABuscar)}`);
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data && data.lastSerial) {
+                    serialManualInput.value = data.lastSerial;
+                    serialManualInput.placeholder = `Último: ${data.lastSerial}`;
+                } else {
+                    serialManualInput.value = '';
+                    serialManualInput.placeholder = 'Ej: NS270520250001'; // O ningún serial previo
+                }
+            } catch (error) {
+                console.error('Error al buscar último serial:', error);
+                serialManualInput.value = '';
+                serialManualInput.placeholder = 'Error al cargar último serial.';
+            }
+        };
 
-        // Validaciones adicionales antes de enviar (por si algo cambió desde la generación)
-        const material = materialInput.value;
-        const descripcion = descripcionInput.value;
-        const um = umInput.value;
+        // Función para generar una única etiqueta HTML
+        const createLabelHtml = (material, descripcion, um, serial) => {
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'label-container';
+            labelDiv.innerHTML = `
+                <h4>${material}</h4>
+                <h5>${descripcion}</h5>
+                <svg class="barcode-svg" data-serial="${serial}"></svg>
+                <p class="serial-text">${serial}</p>
+            `;
+            return labelDiv;
+        };
 
-        if (!material || !descripcion || !um ||
-          descripcion.includes('Buscando') || descripcion.includes('Error')) {
-          alert('Faltan datos de Material, Descripción o UM para registrar. Vuelve a cargar la información.');
-          return false;
-        }
+        // Función para renderizar el código de barras en un SVG
+        const renderBarcodeSvg = (svgElement, serialValue) => {
+            try {
+                JsBarcode(svgElement, serialValue, {
+                    format: "CODE128",
+                    displayValue: false, // No mostrar el texto del serial debajo del código
+                    lineColor: "#000",
+                    width: 2,
+                    height: 50,
+                    margin: 0, // Sin márgenes adicionales
+                    background: "#fff"
+                });
+            } catch (e) {
+                console.error("Error al generar el código de barras para serial:", serialValue, e);
+                svgElement.innerHTML = `<p style="color: red; font-size: 7px; text-align: center;">Error BC: ${serialValue}</p>`;
+            }
+        };
 
-        // Asegurarse de que cada objeto en serialsToRegister tenga todos los campos
-        const completeData = serialsToRegister.map(s => ({
-          material: s.material, // Asegurarse de usar los datos del objeto completo
-          descripcion: s.descripcion,
-          um: s.um,
-          serial: s.serial
-        }));
+        // Función principal para generar seriales y previsualizar etiquetas
+        const generarSerialesYEtiquetas = () => {
+            const material = materialInput.value.trim();
+            const descripcion = descripcionInput.value.trim();
+            const um = umInput.value.trim();
 
-        // console.log("Datos a enviar al Apps Script:", JSON.stringify({ action: 'registerSerials', data: completeData })); // Depuración
+            // Validar que Material, Descripción y UM estén cargados
+            if (!material || !descripcion || !um ||
+                descripcion.includes('Buscando') || descripcion.includes('Error')) {
+                // No mostrar alert aquí, simplemente limpiar la previsualización
+                labelsPreviewContainer.innerHTML = '';
+                serialsOutput.textContent = '';
+                generatedSerialsInSession = [];
+                return []; // Retorna un array vacío si los datos no son válidos
+            }
 
-        generateAndSaveButton.disabled = true;
-        generateAndPrintButton.disabled = true;
-        generateAndSaveButton.textContent = 'Enviando...';
-        generateAndPrintButton.textContent = 'Enviando...';
+            labelsPreviewContainer.innerHTML = ''; // Limpiar previsualización anterior
+            const serialsToProcess = [];
+            generatedSerialsInSession = []; // Limpiar la lista de seriales generados en sesión
 
-        try {
+            // 1. Serial Individual
+            const serialManual = serialManualInput.value.trim();
+            if (serialManual) {
+                serialsToProcess.push(serialManual);
+            }
 
-                const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
+            // 2. Seriales Pegados
+            const serialesPegados = serialesPegadosInput.value.trim();
+            if (serialesPegados) {
+                const parsedSerials = serialesPegados.split('\n').map(s => s.trim()).filter(s => s !== '');
+                serialsToProcess.push(...parsedSerials);
+            }
 
-                    method: 'POST',
+            // 3. Seriales Correlativos
+            const correlativoInicio = correlativoInicioInput.value.trim();
+            const correlativoCantidad = parseInt(correlativoCantidadInput.value, 10);
 
-                    headers: {
+            if (correlativoInicio && correlativoCantidad > 0) {
+                // Lógica para extraer la parte numérica final y el prefijo/sufijo
+                const match = correlativoInicio.match(/^(.*?)([0-9]+)([^0-9]*)$/);
+                if (match) {
+                    const prefix = match[1];
+                    let startNumber = parseInt(match[2], 10);
+                    const numDigits = match[2].length;
+                    const suffix = match[3];
 
-          'Accept': 'application/json'
+                    for (let i = 0; i < correlativoCantidad; i++) {
+                        const currentNumber = (startNumber + i).toString().padStart(numDigits, '0');
+                        serialsToProcess.push(`${prefix}${currentNumber}${suffix}`);
+                    }
+                } else {
+                    alert('El serial inicial para el correlativo no tiene un patrón numérico reconocible. Por favor, asegúrate de que termine con números (ej. NS270520250001).');
+                    return [];
+                }
+            }
 
-        },
+            if (serialsToProcess.length === 0) {
+                // No alert, simplemente no hay nada que previsualizar
+                return [];
+            }
 
-                        body: JSON.stringify({ action: 'registerSerials', data: completeData }) // Enviar un array de objetos
+            // Eliminar duplicados si es necesario (opcional, dependiendo de la lógica de negocio)
+            const uniqueSerials = [...new Set(serialsToProcess)];
 
-                    });
+            // Generar previsualización y registrar para la sesión
+            uniqueSerials.forEach(serial => {
+                const labelHtml = createLabelHtml(material, descripcion, um, serial);
+                labelsPreviewContainer.appendChild(labelHtml);
+                generatedSerialsInSession.push({
+                    material: material,
+                    descripcion: descripcion,
+                    um: um,
+                    serial: serial
+                });
+            });
 
+            // Renderizar todos los códigos de barras después de que los SVG estén en el DOM
+            labelsPreviewContainer.querySelectorAll('.barcode-svg').forEach(svg => {
+                renderBarcodeSvg(svg, svg.dataset.serial);
+            });
 
+            // Mostrar seriales generados en el área de texto
+            serialsOutput.textContent = uniqueSerials.join('\n');
 
-                  if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+            return generatedSerialsInSession; // Retorna los seriales con sus datos completos
+        };
 
+        // Función para enviar datos a la hoja de "Registros" (ahora maneja múltiples seriales)
+        const enviarDatosARegistros = async (serialsToRegister) => {
+            if (serialsToRegister.length === 0) {
+                alert('No hay seriales para registrar.');
+                return false;
+            }
 
+            // Validaciones adicionales antes de enviar (por si algo cambió desde la generación)
+            const material = materialInput.value.trim();
+            const descripcion = descripcionInput.value.trim();
+            const um = umInput.value.trim();
 
-                    const result = await response.json();
+            if (!material || !descripcion || !um ||
+                descripcion.includes('Buscando') || descripcion.includes('Error')) {
+                alert('Faltan datos de Material, Descripción o UM para registrar. Vuelve a cargar la información.');
+                return false;
+            }
 
+            // Asegurarse de que cada objeto en serialsToRegister tenga todos los campos
+            const completeData = serialsToRegister.map(s => ({
+                material: s.material,
+                descripcion: s.descripcion,
+                um: s.um,
+                serial: s.serial
+            }));
 
+            generateAndSaveButton.disabled = true;
+            generateAndPrintButton.disabled = true;
+            generateAndSaveButton.textContent = 'Enviando...';
+            generateAndPrintButton.textContent = 'Enviando...';
 
-                    if (result.success) {
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'registerSerials', data: completeData }) // Enviar un array de objetos
+                });
 
-                        alert('¡Datos registrados exitosamente en la hoja de Registros!');
+                if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
-                        return true;
+                const result = await response.json();
 
-                    } else {
-
-                        alert('Error al registrar los datos: ' + result.message);
-
-                        return false;
-
-                    }
-
-                } catch (error) {
-
-                    console.error('Error al enviar datos:', error);
-
-                    alert('Hubo un problema al conectar con el servidor para registrar los datos. Intenta de nuevo más tarde. Detalles: ' + error.message);
-
-                    return false;
-
-                } finally {
-
-                    generateAndSaveButton.disabled = false;
-
-                    generateAndPrintButton.disabled = false;
-
-                    generateAndSaveButton.textContent = 'Generar y Guardar';
-
-                    generateAndPrintButton.textContent = 'Generar e Imprimir';
-
-                }
-
-            };
-
-
+                if (result.success) {
+                    alert('¡Datos registrados exitosamente en la hoja de Registros!');
+                    return true;
+                } else {
+                    alert('Error al registrar los datos: ' + result.message);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error al enviar datos:', error);
+                alert('Hubo un problema al conectar con el servidor para registrar los datos. Intenta de nuevo más tarde. Detalles: ' + error.message);
+                return false;
+            } finally {
+                generateAndSaveButton.disabled = false;
+                generateAndPrintButton.disabled = false;
+                generateAndSaveButton.textContent = 'Generar y Guardar';
+                generateAndPrintButton.textContent = 'Generar e Imprimir';
+            }
+        };
 
       // MODIFICACIÓN PRINCIPAL AQUÍ: generarEImprimirPDF usando html2canvas y jsPDF
-      const generarEImprimirPDF = async (serialsData) => {
+    const generarEImprimirPDF = async (serialsData) => {
         if (serialsData.length === 0) {
-          alert('No hay seriales para imprimir.');
-          return;
+            alert('No hay seriales para imprimir.');
+            return;
         }
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
-          orientation: 'center',
-          unit: 'mm',
-          format: [110, 55] // Formato de 110mm de ancho por 55mm de alto para cada etiqueta
+            orientation: 'portrait', // O 'landscape' si el ancho es mayor que el alto del formato
+            unit: 'mm',
+            format: [110, 55] // Formato de 110mm de ancho por 55mm de alto para cada etiqueta
         });
 
-        // Eliminar la función addSvgToPdf ya que html2canvas la reemplaza.
+        // Obtener dimensiones de la página PDF para centrado
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
 
         for (let i = 0; i < serialsData.length; i++) {
-          const item = serialsData[i];
+            const item = serialsData[i];
 
-          // Crear un contenedor temporal para renderizar la etiqueta y convertirla a imagen
-          const tempLabelDiv = document.createElement('div');
-          tempLabelDiv.style.cssText = `
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-            width: 110mm; /* El tamaño de la etiqueta para html2canvas */
-            height: 55mm;
-            padding: 2mm; /* Replicar el padding del CSS de impresión */
-            box-sizing: border-box;
-            background-color: #fff; /* Asegurar fondo blanco */
-          `;
-          tempLabelDiv.innerHTML = `
-            <h4 style="font-size: 10px; margin: 0; text-align: center;">${item.material}</h4>
-            <h5 style="font-size: 7px; margin: 0; text-align: center;">${item.descripcion}</h5>
-            <svg id="tempBarcodeSvg-${i}" style="width: 100%; height: 10mm; margin: 1mm 0; display: block;"></svg>
-            <p style="font-weight: bold; font-size: 8px; word-break: break-all; margin: 0; text-align: center;">${item.serial}</p>
-          `;
-          document.body.appendChild(tempLabelDiv);
+            // Crear un contenedor temporal para renderizar la etiqueta y convertirla a imagen
+            const tempLabelDiv = document.createElement('div');
+            tempLabelDiv.style.cssText = `
+                position: absolute;
+                left: -9999px;
+                top: -9999px;
+                width: 120mm; /* El tamaño de la etiqueta para html2canvas */
+                height: 90mm;
+                padding: 2mm; /* Replicar el padding del CSS de impresión */
+                box-sizing: border-box;
+                background-color: #fff; /* Asegurar fondo blanco */
+                /* Opcional: para controlar el layout interno si html2canvas tiene problemas */
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Centrar contenido verticalmente */
+                align-items: center;    /* Centrar contenido horizontalmente */
+                font-family: Arial, sans-serif; /* Ayuda a que html2canvas renderice las fuentes */
+            `;
+            tempLabelDiv.innerHTML = `
+                <h1 style="font-size: 12px; margin: 0; text-align: center; line-height: 1;">${item.material}</h4>
+                <h1 style="font-size: 12px; margin: 0; text-align: center; line-height: 1;">${item.descripcion}</h5>
+                <svg id="tempBarcodeSvg-${i}" style="width: 90%; height: 12mm; margin: 1mm 0; display: block;"></svg>
+                <h1 style="font-weight: bold; font-size: 12px; word-break: break-all; margin: 0; text-align: center; line-height: 1;">${item.serial}</p>
+            `;
+            document.body.appendChild(tempLabelDiv);
 
-          // Renderizar el código de barras en el SVG temporal
-          const tempSvgElement = document.getElementById(`tempBarcodeSvg-${i}`);
-          renderBarcodeSvg(tempSvgElement, item.serial);
+            // Renderizar el código de barras en el SVG temporal
+            const tempSvgElement = document.getElementById(`tempBarcodeSvg-${i}`);
+            renderBarcodeSvg(tempSvgElement, item.serial);
 
-          // Esperar a que el SVG sea renderizado por JsBarcode antes de capturar con html2canvas
-          // Pequeño retardo para asegurar que JsBarcode haya terminado
-          await new Promise(resolve => setTimeout(resolve, 50)); 
+            // Esperar a que el SVG sea renderizado por JsBarcode antes de capturar con html2canvas
+            await new Promise(resolve => setTimeout(resolve, 100)); // Retardo aumentado para mayor seguridad
 
-          // Capturar el contenido de la etiqueta temporal como una imagen
-          const canvas = await html2canvas(tempLabelDiv, {
-            scale: 3, // Aumentar la escala para mayor resolución en el PDF
-            useCORS: true, // Importante si hay imágenes externas (aunque aquí no las hay)
-            logging: false // Desactivar logs de html2canvas en consola
-          });
+            // Capturar el contenido de la etiqueta temporal como una imagen
+            const canvas = await html2canvas(tempLabelDiv, {
+                scale: 3, // Aumentar la escala para mayor resolución en el PDF
+                useCORS: true,
+                logging: false
+            });
 
-          // Eliminar el div temporal
-          document.body.removeChild(tempLabelDiv);
+            // Eliminar el div temporal
+            document.body.removeChild(tempLabelDiv);
 
-          if (i > 0) {
-            doc.addPage();
-          }
+            if (i > 0) {
+                doc.addPage();
+            }
 
-          const imgData = canvas.toDataURL('image/png');
-          // Calcular dimensiones para que la imagen ocupe el ancho total de la página PDF
-          const imgWidth = doc.internal.pageSize.getWidth();
-          const imgHeight = canvas.height * imgWidth / canvas.width;
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Calcular dimensiones de la imagen para que quepa en el PDF manteniendo la proporción
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
 
-          // Añadir la imagen al PDF (la imagen del canvas)
-          doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            // Calcular las dimensiones de la imagen ajustadas a la página del PDF
+            const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+            const scaledWidth = imgWidth * ratio;
+            const scaledHeight = imgHeight * ratio;
+
+            // Calcular las coordenadas para centrar la imagen en la página
+            const x = (pageWidth - scaledWidth) / 2;
+            const y = (pageHeight - scaledHeight) / 2;
+
+            // Añadir la imagen al PDF (la imagen del canvas)
+            doc.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
         }
 
-        // 💡 NUEVO: Usar Blob para abrir el PDF e imprimir automáticamente
+        // 💡 Usar Blob para abrir el PDF e imprimir automáticamente
         try {
-          const blob = doc.output('blob');
-          const blobUrl = URL.createObjectURL(blob);
+            const blob = doc.output('blob');
+            const blobUrl = URL.createObjectURL(blob);
 
-          const printWindow = window.open(blobUrl, '_blank');
+            const printWindow = window.open(blobUrl, '_blank');
 
-          if (printWindow) {
-            printWindow.onload = () => {
-              // Pequeño retardo para asegurar que el PDF se cargue en la ventana emergente
-              setTimeout(() => {
-                printWindow.focus();
-                printWindow.print();
-              }, 500); // 500ms de retardo
-            };
-          } else {
-            alert("El navegador bloqueó la ventana emergente para la impresión. Por favor, permite las ventanas emergentes para esta página.");
-          }
+            if (printWindow) {
+                printWindow.onload = () => {
+                    // Pequeño retardo para asegurar que el PDF se cargue en la ventana emergente
+                    setTimeout(() => {
+                        printWindow.focus();
+                        printWindow.print();
+                        URL.revokeObjectURL(blobUrl); // Liberar la URL del blob después de usarla
+                    }, 500); // 500ms de retardo
+                };
+                // Asegurarse de revocar la URL si la ventana se cierra sin cargar completamente
+                printWindow.onbeforeunload = () => URL.revokeObjectURL(blobUrl);
+            } else {
+                alert("El navegador bloqueó la ventana emergente para la impresión. Por favor, permite las ventanas emergentes para esta página.");
+            }
         } catch (e) {
-          console.error("Error al abrir la ventana de impresión/PDF:", e);
-          alert("Hubo un error al preparar el PDF para impresión. Detalles: " + e.message);
+            console.error("Error al abrir la ventana de impresión/PDF:", e);
+            alert("Hubo un error al preparar el PDF para impresión. Detalles: " + e.message);
         }
-      };
-
-      // Función para limpiar el formulario después de generar/imprimir
-      const resetForm = () => {
-        nomenclaturaInput.value = '0'; // Valor por defecto
-        codigoInput.value = '';
-        materialInput.value = '';
-        descripcionInput.value = '';
-        umInput.value = '';
-        serialManualInput.value = '';
-        serialesPegadosInput.value = '';
-        correlativoInicioInput.value = '';
-        correlativoCantidadInput.value = '1';
-        labelsPreviewContainer.innerHTML = '';
-        serialsOutput.textContent = '';
-        generatedSerialsInSession = []; // Limpiar los seriales en sesión
-        updateMaterial(); // Llama para limpiar estados iniciales
-      };
-
-      // --- Event Listeners para la sección de Generación ---
-      nomenclaturaInput.addEventListener('change', updateMaterial);
-      codigoInput.addEventListener('input', updateMaterial);
-
-      // Re-generar vista previa de etiquetas cuando cambian los seriales
-      serialManualInput.addEventListener('input', generarSerialesYEtiquetas);
-      serialesPegadosInput.addEventListener('input', generarSerialesYEtiquetas);
-      correlativoInicioInput.addEventListener('input', generarSerialesYEtiquetas);
-      correlativoCantidadInput.addEventListener('input', generarSerialesYEtiquetas);
+    };
 
 
-      generateAndSaveButton.addEventListener('click', async () => {
-        const serials = generarSerialesYEtiquetas();
-        if (serials.length > 0) {
-          const success = await enviarDatosARegistros(serials);
-          if (success) {
-            resetForm(); // Resetear si se guardó correctamente
-          }
-        }
-      });
+        // Función para limpiar el formulario después de generar/imprimir
+        const resetForm = () => {
+            // Eliminados: nomenclaturaInput.value, codigoInput.value
+            materialInput.value = ''; // Se limpia el campo de material
+            descripcionInput.value = '';
+            umInput.value = '';
+            serialManualInput.value = '';
+            serialesPegadosInput.value = '';
+            correlativoInicioInput.value = '';
+            correlativoCantidadInput.value = '1';
+            labelsPreviewContainer.innerHTML = '';
+            serialsOutput.textContent = '';
+            generatedSerialsInSession = []; // Limpiar los seriales en sesión
+            // Ya no es necesario llamar a updateMaterial al resetear si no hay nomenclatura/código
+        };
 
-      generateAndPrintButton.addEventListener('click', async () => {
-        const serials = generarSerialesYEtiquetas();
-        if (serials.length > 0) {
-          const success = await enviarDatosARegistros(serials); // Guardar primero
-          if (success) {
-            await generarEImprimirPDF(serials); // Imprimir solo si se guardó
-            // resetForm(); // Se recomienda resetear DESPUÉS de la impresión, si la ventana de impresión se cierra o no es bloqueante.
-                              // Si es bloqueante, el reset puede ir aquí, si no, es mejor que el usuario cierre la ventana de impresión.
-                              // Por ahora, lo dejamos aquí para que limpie después de iniciar la impresión.
-            resetForm();
-          }
-        }
-      });
+        // --- Event Listeners para la sección de Generación ---
+        // Ahora el evento se dispara al cambiar el materialInput
+        materialInput.addEventListener('input', updateMaterial); // Escucha directamente el campo de material
 
-      // --- Event Listeners para la gestión de Pestañas ---
-      tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          tabButtons.forEach(btn => btn.classList.remove('active'));
-          tabContents.forEach(content => content.classList.remove('active'));
+        // Re-generar vista previa de etiquetas cuando cambian los seriales
+        serialManualInput.addEventListener('input', generarSerialesYEtiquetas);
+        serialesPegadosInput.addEventListener('input', generarSerialesYEtiquetas);
+        correlativoInicioInput.addEventListener('input', generarSerialesYEtiquetas);
+        correlativoCantidadInput.addEventListener('input', generarSerialesYEtiquetas);
 
-          button.classList.add('active');
-          document.getElementById(button.dataset.tab).classList.add('active');
 
-          // Limpiar campos de búsqueda al cambiar a pestaña de generación
-          if (button.dataset.tab === 'generate') {
-            searchSerialInput.value = '';
-            searchMaterialInput.value = '';
-            searchResultList.innerHTML = '';
-          } else if (button.dataset.tab === 'search') {
-            // Opcional: Limpiar campos de generación al cambiar a búsqueda
-            resetForm();
-          }
+        generateAndSaveButton.addEventListener('click', async () => {
+            const serials = generarSerialesYEtiquetas();
+            if (serials.length > 0) {
+                const success = await enviarDatosARegistros(serials);
+                if (success) {
+                    resetForm(); // Resetear si se guardó correctamente
+                }
+            } else {
+                alert('No hay seriales válidos para generar. Asegúrate de que el Material, Descripción y UM estén cargados, y que hayas ingresado seriales.');
+            }
         });
-      });
 
-      // --- Funcionalidad de Búsqueda (Parte 2, la implementaremos en el próximo paso) ---
-      searchButton.addEventListener('click', async () => {
-        alert('La funcionalidad de búsqueda y reimpresión se implementará en el siguiente paso.');
-        // Aquí irá la lógica para buscar y mostrar los seriales registrados
-      });
+        generateAndPrintButton.addEventListener('click', async () => {
+            const serials = generarSerialesYEtiquetas();
+            if (serials.length > 0) {
+                const success = await enviarDatosARegistros(serials); // Guardar primero
+                if (success) {
+                    await generarEImprimirPDF(serials); // Imprimir solo si se guardó
+                    resetForm();
+                }
+            } else {
+                alert('No hay seriales válidos para generar. Asegúrate de que el Material, Descripción y UM estén cargados, y que hayas ingresado seriales.');
+            }
+        });
+
+        // --- Event Listeners para la gestión de Pestañas ---
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+
+                // Limpiar campos de búsqueda al cambiar a pestaña de generación
+                if (button.dataset.tab === 'generate') {
+                    searchSerialInput.value = '';
+                    searchMaterialInput.value = '';
+                    searchResultList.innerHTML = '';
+                } else if (button.dataset.tab === 'search') {
+                    // Opcional: Limpiar campos de generación al cambiar a búsqueda
+                    resetForm();
+                }
+            });
+        });
+
+        // --- Funcionalidad de Búsqueda (Parte 2, la implementaremos en el próximo paso) ---
+        searchButton.addEventListener('click', async () => {
+            alert('La funcionalidad de búsqueda y reimpresión se implementará en el siguiente paso.');
+            // Aquí irá la lógica para buscar y mostrar los seriales registrados
+        });
 
 
-      // --- Inicialización al cargar la página ---
-      resetForm(); // Llama a resetForm para establecer los valores iniciales y limpiar
-      // Se asume que la pestaña "Generar Etiquetas" es la activa por defecto
+        // --- Inicialización al cargar la página ---
+        resetForm(); // Llama a resetForm para establecer los valores iniciales y limpiar
+        // Se asume que la pestaña "Generar Etiquetas" es la activa por defecto
     });
-  </script>
-
+</script>
+  
 </body>
 </html>
