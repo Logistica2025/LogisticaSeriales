@@ -769,7 +769,7 @@
         const doc = new jsPDF({
           orientation: 'portrait',
           unit: 'mm',
-          format: [98, 45] // Formato de 50mm de ancho por 30mm de alto para cada etiqueta
+          format: [110, 55] // Formato de 110mm de ancho por 55mm de alto para cada etiqueta
         });
 
         // Eliminar la función addSvgToPdf ya que html2canvas la reemplaza.
@@ -783,8 +783,8 @@
             position: absolute;
             left: -9999px;
             top: -9999px;
-            width: 50mm; /* El tamaño de la etiqueta para html2canvas */
-            height: 30mm;
+            width: 110mm; /* El tamaño de la etiqueta para html2canvas */
+            height: 55mm;
             padding: 2mm; /* Replicar el padding del CSS de impresión */
             box-sizing: border-box;
             background-color: #fff; /* Asegurar fondo blanco */
