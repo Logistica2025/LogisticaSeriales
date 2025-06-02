@@ -662,8 +662,8 @@
                 position: absolute;
                 left: -9999px;
                 top: -9999px;
-                width: 150mm; /* El tamaño de la etiqueta para html2canvas */
-                height: 70mm;
+                width: 450mm; /* El tamaño de la etiqueta para html2canvas */
+                height: 200mm;
                 padding: 2mm; /* Replicar el padding del CSS de impresión */
                 box-sizing: border-box;
                 background-color: #fff; /* Asegurar fondo blanco */
@@ -675,9 +675,9 @@
                 font-family: Arial, sans-serif; /* Ayuda a que html2canvas renderice las fuentes */
             `;
             tempLabelDiv.innerHTML = `
-                <h1 style="font-size: 10px; margin: 0; text-align: center; line-height: 1;">${item.material}</h1>
-                <h1 style="font-size: 7px; margin: 0; text-align: center; line-height: 1;">${item.descripcion}</h1>
-                <svg id="tempBarcodeSvg-${i}" style="width: 90%; height: 12mm; margin: 1mm 0; display: block;"></svg>
+                <h1 style="font-size: 30px; margin: 0; text-align: center; line-height: 1;">${item.material}</h1>
+                <h1 style="font-size: 30px; margin: 0; text-align: center; line-height: 1;">${item.descripcion}</h1>
+                <svg id="tempBarcodeSvg-${i}" style="width: 90%; height: 30mm; margin: 1mm 0; display: block;"></svg>
                 <h1 style="font-weight: bold; font-size: 9px; word-break: break-all; margin: 0; text-align: center; line-height: 1;">${item.serial}</h1>
             `;
             document.body.appendChild(tempLabelDiv);
