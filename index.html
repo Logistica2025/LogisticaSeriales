@@ -640,8 +640,8 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
             orientation: 'portrait', // O 'landscape' si el ancho es mayor que el alto del formato
-            unit: 'cm',
-            format: [50, 30] // Formato de 110mm de ancho por 55mm de alto para cada etiqueta
+            unit: 'mm',
+            format: [110, 60] // Formato de 110mm de ancho por 55mm de alto para cada etiqueta
         });
 
         // Obtener dimensiones de la página PDF para centrado
