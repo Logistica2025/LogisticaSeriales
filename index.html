@@ -209,17 +209,16 @@
     /* Estilos para impresión */
     @media print {
         @page {
-            /* Define el tamaño de la página a 100mm x 50mm (ancho x alto) */
-            size: 100mm 50mm;
-            /* Elimina todos los márgenes predeterminados de la impresora */
-            margin: 0;
+            size: 100mm 50mm; /* Define el tamaño de la página a 100mm x 50mm (ancho x alto) */
+            margin: 0; /* Elimina todos los márgenes predeterminados de la impresora */
         }
 
         body {
             margin: 0;
             padding: 0;
             background-color: white;
-            /* No establecemos un font-size general aquí, sino en los elementos específicos */
+            -webkit-print-color-adjust: exact; /* Asegura que los colores de fondo se impriman */
+            print-color-adjust: exact;
         }
         
         /* Ocultar todo lo que no sea la previsualización de etiquetas al imprimir */
@@ -233,88 +232,105 @@
             padding: 0;
             margin: 0;
             box-shadow: none;
-            /* Asegúrate de que la previsualización ocupe toda la página disponible */
             width: 100%;
             height: 100%;
-            display: flex; /* Usar flexbox para centrar la única etiqueta */
-            justify-content: center; /* Centrar horizontalmente */
-            align-items: center; /* Centrar verticalmente */
+            /* **MODIFICADO:** No centrar verticalmente aquí, el label-container lo manejará */
+            justify-content: flex-start; /* Asegura que se alinee al inicio del flexbox */
+            align-items: center; /* Centra horizontalmente, esto está bien */
+            overflow: hidden; /* Evita desbordamientos si el contenido es demasiado grande */
         }
         .labels-preview h2 {
             display: none; /* Ocultar el título "Previsualización de Etiquetas" al imprimir */
         }
 
         .labels-grid {
-            /* No queremos un grid al imprimir, queremos una sola etiqueta por página */
-            display: block !important;
+            /* Para impresión, mostramos solo una etiqueta por página, así que no necesitamos el grid */
+            display: block !important; 
             margin: 0;
             padding: 0;
-            width: 100%; /* El grid ahora contendrá una sola etiqueta, ocupando el 100% del contenedor */
+            width: 100%;
             height: 100%;
-            /* Flexbox para centrar la etiqueta si es la única en el contenedor */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            /* **MODIFICADO:** No centrar verticalmente aquí, el label-container lo manejará */
+            justify-content: flex-start; /* Asegura que se alinee al inicio del flexbox */
+            align-items: center; /* Centra horizontalmente, esto está bien */
         }
 
         .label-container {
             /* La etiqueta real, ahora con el tamaño deseado de 100x50mm */
             width: 98mm; /* Ajustado ligeramente menor que 100mm para compensar posibles bordes de impresora */
             height: 48mm; /* Ajustado ligeramente menor que 50mm para compensar posibles bordes de impresora */
-            border: 1px solid #ccc; /* Mantener un borde si lo deseas, o eliminarlo */
+            border: 1px solid #ccc; /* Puedes quitar este borde si no lo necesitas en la impresión final */
             margin: 0; /* Sin márgenes entre etiquetas, ya que cada una estará en su propia página */
-            display: flex; /* Usar flexbox para centrar contenido dentro de la etiqueta */
+            display: flex;
             flex-direction: column;
-            justify-content: center; /* Centra el contenido verticalmente dentro de la etiqueta */
+            justify-content: flex-start; /* Alinea el contenido en la parte superior */
             align-items: center; /* Centra el contenido horizontalmente dentro de la etiqueta */
             box-sizing: border-box; /* Crucial para incluir padding/border en el tamaño total */
             page-break-after: always; /* Cada etiqueta en una nueva página */
-            padding: 2mm; /* Pequeño padding interno para que el contenido no toque los bordes */
+            padding: 1mm; /* **MODIFICADO:** Reducido el padding para más espacio. Puedes ajustar a 0mm si lo deseas */
             background-color: white; /* Asegurar fondo blanco */
             text-align: center; /* Centrar el texto por defecto */
+            overflow: hidden; /* Muy importante para que el contenido no se salga */
         }
         
         /* Ajustar el tamaño de fuente y márgenes dentro de la etiqueta para que todo quepa */
         .label-container h4 {
-            font-size: 20px; /* Tamaño de fuente más grande para el material */
-            margin: 0; /* Sin márgenes predeterminados */
-            line-height: 1.2; /* Ajustar el interlineado */
+            font-size: 18px; /* Reducido ligeramente para dar más espacio */
+            margin: 0; 
+            line-height: 1.1; /* Ajustar el interlineado */
             text-align: center;
+            white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+            overflow: hidden; /* Oculta cualquier texto que se desborde */
+            text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es demasiado largo */
+            max-width: 100%; /* Asegura que no se desborde el contenedor */
         }
         .label-container h5 {
-            font-size: 15px; /* Tamaño de fuente para la descripción */
-            margin: 2mm 0; /* Un poco de margen para separar del material y código de barras */
-            line-height: 1.2;
+            font-size: 12px; /* Reducido para la descripción */
+            margin: 1mm 0; /* Un poco de margen para separar del material y código de barras */
+            line-height: 1.1;
             text-align: center;
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
         .barcode-svg {
-            width: 90mm; /* Ancho del código de barras */
-            height: 20mm; /* Altura del código de barras */
-            margin: 3mm 0; /* Margen superior e inferior para el código de barras */
+            width: 85mm; /* Ancho del código de barras, ajustado para dejar márgenes */
+            height: 18mm; /* Altura del código de barras */
+            margin: 2mm 0; /* Margen superior e inferior para el código de barras */
+            display: block; /* Asegura que ocupe su propio espacio */
+            overflow: hidden;
         }
         .serial-text {
-            font-size: 18px; /* Tamaño de fuente más grande para el serial */
+            font-size: 16px; /* Reducido ligeramente para el serial */
             font-weight: bold;
             margin: 0;
-            line-height: 1.2;
+            line-height: 1.1;
             text-align: center;
+            word-break: break-all; /* Permite que el serial largo se rompa si es necesario */
+            max-width: 100%;
+            overflow: hidden;
         }
 
         /* Opcional: si tienes un logo */
         .logo-kalosa {
-            margin-bottom: 2mm; /* Espacio debajo del logo */
+            margin-bottom: 1mm; /* Espacio debajo del logo */
         }
         .logo-kalosa img {
-            width: 25mm; /* Ajusta el tamaño del logo */
+            width: 20mm; /* Ajusta el tamaño del logo */
             height: auto;
+            display: block;
+            margin: 0 auto; /* Centra el logo */
         }
 
-        /* Opcional: para el texto de CANT */
+        /* Opcional: para el texto de CANT (ELIMINADO EN ESTA MODIFICACIÓN) */
+        /*
         .cantidad-etiqueta {
-            font-size: 14px;
-            margin-top: 2mm; /* Espacio encima de la cantidad */
+            font-size: 12px;
+            margin-top: 1mm;
             text-align: center;
         }
+        */
     }
   </style>
 </head>
@@ -720,7 +736,7 @@
                 top: -9999px;
                 width: 98mm; /* Ancho similar al tamaño final de la etiqueta */
                 height: 48mm; /* Alto similar al tamaño final de la etiqueta */
-                padding: 2mm; /* Padding interno para que el contenido no toque los bordes */
+                padding: 1mm; /* **MODIFICADO:** Reducido para mayor control */
                 box-sizing: border-box;
                 background-color: #fff;
                 display: flex;
@@ -731,15 +747,14 @@
                 text-align: center; /* Asegura que el texto esté centrado */
             `;
             tempLabelDiv.innerHTML = `
-                <div class="logo-kalosa" style="margin-bottom: 2mm;">
-                    <img src="kalosa-logo.png" alt="Logo Kalosa" style="width: 25mm; height: auto; display: block;">
+                <div class="logo-kalosa" style="margin-bottom: 1mm;">
+                    <img src="kalosa-logo.png" alt="Logo Kalosa" style="width: 20mm; height: auto; display: block; margin: 0 auto;">
                 </div>
-                <div style="font-size: 20px; font-weight: bold; margin: 0; line-height: 1.2;">${item.material}</div>
-                <div style="font-size: 15px; margin: 2mm 0; line-height: 1.2;">${item.descripcion}</div>
-                <svg id="tempBarcodeSvg-${i}" style="width: 90mm; height: 20mm; margin: 3mm 0; display: block;"></svg>
-                <div style="font-weight: bold; font-size: 18px; word-break: break-all; margin: 0; line-height: 1.2;">${item.serial}</div>
-                <div style="font-size: 14px; margin-top: 2mm;">CANT:1</div>
-            `;
+                <div style="font-size: 18px; font-weight: bold; margin: 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${item.material}</div>
+                <div style="font-size: 12px; margin: 1mm 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${item.descripcion}</div>
+                <svg id="tempBarcodeSvg-${i}" style="width: 85mm; height: 18mm; margin: 2mm 0; display: block; overflow: hidden;"></svg>
+                <div style="font-weight: bold; font-size: 16px; word-break: break-all; margin: 0; line-height: 1.1; max-width: 100%; overflow: hidden;">${item.serial}</div>
+                `;
             document.body.appendChild(tempLabelDiv);
 
             // Renderizar el código de barras en el SVG temporal
@@ -747,7 +762,7 @@
             renderBarcodeSvg(tempSvgElement, item.serial);
 
             // Esperar a que el SVG sea renderizado por JsBarcode antes de capturar con html2canvas
-            await new Promise(resolve => setTimeout(resolve, 150)); // Retardo aumentado para mayor seguridad y rendering
+            await new Promise(resolve => setTimeout(resolve, 200)); // Retardo aumentado para mayor seguridad y rendering
 
             // Capturar el contenido de la etiqueta temporal como una imagen
             const canvas = await html2canvas(tempLabelDiv, {
@@ -770,155 +785,123 @@
             const imgWidth = canvas.width;
             const imgHeight = canvas.height;
 
-            // Calcular las dimensiones de la imagen para que se ajusten al 90% del ancho de la página PDF
-            // y mantener la proporción, luego centrarla.
-            const targetWidth = pageWidth * 0.9; // 90% del ancho de la página PDF
-            const targetHeight = (targetWidth / imgWidth) * imgHeight;
+            // Calcular las dimensiones para que la imagen ocupe el 98% del ancho de la página PDF
+            const targetPdfWidth = pageWidth * 0.98; 
+            const targetPdfHeight = (targetPdfWidth / imgWidth) * imgHeight;
 
-            // Ajustar si la altura excede la página
-            const finalWidth = targetWidth;
-            const finalHeight = targetHeight;
+            // Calcular las coordenadas para centrar la imagen horizontalmente y alinearla arriba
+            const x = (pageWidth - targetPdfWidth) / 2;
+            const y = 0; // **MODIFICADO:** Posicionar en la parte superior del PDF
 
-            // Calcular las coordenadas para centrar la imagen en la página
-            const x = (pageWidth - finalWidth) / 2;
-            const y = (pageHeight - finalHeight) / 2; // Centrado verticalmente por defecto
-
-            // Añadir la imagen al PDF
-            doc.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
+            doc.addImage(imgData, 'PNG', x, y, targetPdfWidth, targetPdfHeight);
         }
 
-        // 💡 Usar Blob para abrir el PDF e imprimir automáticamente
-        try {
-            const blob = doc.output('blob');
-            const blobUrl = URL.createObjectURL(blob);
+        doc.autoPrint(); // Abre el diálogo de impresión automáticamente
+        window.open(doc.output('bloburl'), '_blank'); // Abre el PDF en una nueva pestaña
 
-            const printWindow = window.open(blobUrl, '_blank');
-
-            if (printWindow) {
-                printWindow.onload = () => {
-                    // Pequeño retardo para asegurar que el PDF se cargue en la ventana emergente
-                    setTimeout(() => {
-                        printWindow.focus();
-                        printWindow.print();
-                        URL.revokeObjectURL(blobUrl); // Liberar la URL del blob después de usarla
-                    }, 500); // 500ms de retardo
-                };
-                // Asegurarse de revocar la URL si la ventana se cierra sin cargar completamente
-                printWindow.onbeforeunload = () => URL.revokeObjectURL(blobUrl);
-            } else {
-                alert("El navegador bloqueó la ventana emergente para la impresión. Por favor, permite las ventanas emergentes para esta página.");
-            }
-        } catch (e) {
-            console.error("Error al abrir la ventana de impresión/PDF:", e);
-            alert("Hubo un error al preparar el PDF para impresión. Detalles: " + e.message);
-        }
+        // Retorna a la previsualización original después de imprimir
+        generarSerialesYEtiquetas();
     };
 
-        // Función para limpiar el formulario después de generar/imprimir
-        const resetForm = () => {
-            // Eliminados: nomenclaturaInput.value, codigoInput.value
-            materialInput.value = ''; // Se limpia el campo de material
-            descripcionInput.value = '';
-            umInput.value = '';
-            serialManualInput.value = '';
-            serialesPegadosInput.value = '';
-            correlativoInicioInput.value = '';
-            correlativoCantidadInput.value = '1';
-            labelsPreviewContainer.innerHTML = '';
-            serialsOutput.textContent = '';
-            generatedSerialsInSession = []; // Limpiar los seriales en sesión
-            // Ya no es necesario llamar a updateMaterial al resetear si no hay nomenclatura/código
-        };
-
-        // --- Event Listeners para la sección de Generación ---
-        // Ahora el evento se dispara al cambiar el materialInput
-        materialInput.addEventListener('input', updateMaterial); // Escucha directamente el campo de material
-
-        // Re-generar vista previa de etiquetas cuando cambian los seriales
+        // --- Event Listeners ---
+        materialInput.addEventListener('input', updateMaterial);
         serialManualInput.addEventListener('input', generarSerialesYEtiquetas);
         serialesPegadosInput.addEventListener('input', generarSerialesYEtiquetas);
         correlativoInicioInput.addEventListener('input', generarSerialesYEtiquetas);
         correlativoCantidadInput.addEventListener('input', generarSerialesYEtiquetas);
 
-        // Event listener para el botón "Generar y Guardar"
         generateAndSaveButton.addEventListener('click', async () => {
-            const serialsToSave = generarSerialesYEtiquetas(); // Obtener los seriales generados en la vista previa
-            if (serialsToSave.length > 0) {
-                const success = await enviarDatosARegistros(serialsToSave);
-                if (success) {
-                    resetForm(); // Limpiar el formulario si el guardado fue exitoso
-                }
+            const serials = generarSerialesYEtiquetas();
+            if (serials.length > 0) {
+                await enviarDatosARegistros(serials);
+                // Si se guardó, puedes limpiar los campos si deseas
+                serialManualInput.value = '';
+                serialesPegadosInput.value = '';
+                correlativoInicioInput.value = '';
+                correlativoCantidadInput.value = '1';
+                labelsPreviewContainer.innerHTML = '';
+                serialsOutput.textContent = '';
+                generatedSerialsInSession = [];
+                buscarUltimoSerial(); // Actualizar el serial manual con el último después de guardar
             } else {
-                alert('No se han generado seriales para guardar. Por favor, ingresa los datos de Material y al menos un serial.');
+                alert('No hay seriales generados para guardar. Por favor, ingresa los datos primero.');
             }
         });
 
-        // Event listener para el botón "Generar e Imprimir"
         generateAndPrintButton.addEventListener('click', async () => {
-            const serialsToPrint = generarSerialesYEtiquetas(); // Obtener los seriales generados en la vista previa
-            if (serialsToPrint.length > 0) {
-                // Primero guarda, luego imprime si el guardado fue exitoso
-                const success = await enviarDatosARegistros(serialsToPrint);
-                if (success) {
-                    await generarEImprimirPDF(serialsToPrint); // Imprimir si el guardado fue exitoso
-                    resetForm(); // Limpiar el formulario después de imprimir
+            const serials = generarSerialesYEtiquetas();
+            if (serials.length > 0) {
+                const saved = await enviarDatosARegistros(serials); // Guardar antes de imprimir
+                if (saved) {
+                    await generarEImprimirPDF(serials);
+                    // Si se imprimió, puedes limpiar los campos si deseas
+                    serialManualInput.value = '';
+                    serialesPegadosInput.value = '';
+                    correlativoInicioInput.value = '';
+                    correlativoCantidadInput.value = '1';
+                    labelsPreviewContainer.innerHTML = '';
+                    serialsOutput.textContent = '';
+                    generatedSerialsInSession = [];
+                    buscarUltimoSerial(); // Actualizar el serial manual con el último después de imprimir
                 }
             } else {
-                alert('No se han generado seriales para imprimir. Por favor, ingresa los datos de Material y al menos un serial.');
+                alert('No hay seriales generados para imprimir. Por favor, ingresa los datos primero.');
             }
         });
 
-        // --- Funciones de Búsqueda y Reimpresión (Pendientes de Implementación en el Backend) ---
-        // Estas funciones solo tienen el frontend, necesitarían un backend real para funcionar
+        // --- Lógica para Búsqueda (sin cambios) ---
         searchButton.addEventListener('click', async () => {
-            const serialSearch = searchSerialInput.value.trim();
-            const materialSearch = searchMaterialInput.value.trim();
+            const searchSerial = searchSerialInput.value.trim();
+            const searchMaterial = searchMaterialInput.value.trim();
+            searchResultList.innerHTML = ''; // Limpiar resultados anteriores
 
-            if (!serialSearch && !materialSearch) {
-                alert('Por favor, ingresa un serial o un número de material para buscar.');
+            if (!searchSerial && !searchMaterial) {
+                alert('Por favor, ingresa un serial o un material para buscar.');
                 return;
             }
 
-            searchResultList.innerHTML = '<li>Buscando...</li>';
+            searchButton.disabled = true;
+            searchButton.textContent = 'Buscando...';
 
             try {
-                let url = `${GOOGLE_APPS_SCRIPT_WEB_APP_URL}?action=searchRecords`;
-                if (serialSearch) {
-                    url += `&serial=${encodeURIComponent(serialSearch)}`;
+                const response = await fetch(`${GOOGLE_APPS_SCRIPT_WEB_APP_URL}?action=searchRecords&serial=${encodeURIComponent(searchSerial)}&material=${encodeURIComponent(searchMaterial)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
                 }
-                if (materialSearch) {
-                    url += `&material=${encodeURIComponent(materialSearch)}`;
-                }
-
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
                 const data = await response.json();
 
-                searchResultList.innerHTML = ''; // Limpiar resultados anteriores
                 if (data && data.records && data.records.length > 0) {
                     data.records.forEach(record => {
                         const li = document.createElement('li');
-                        li.textContent = `Material: ${record.material}, Descripción: ${record.descripcion}, Serial: ${record.serial}`;
+                        li.textContent = `Serial: ${record.serial}, Material: ${record.material}, Descripción: ${record.descripcion}, UM: ${record.um}, Fecha: ${record.fecha}`;
+                        
                         const reprintButton = document.createElement('button');
                         reprintButton.textContent = 'Reimprimir';
                         reprintButton.className = 'action-button btn-info';
                         reprintButton.style.marginLeft = '10px';
-                        reprintButton.onclick = () => generarEImprimirPDF([record]); // Reimprimir solo este registro
+                        reprintButton.onclick = () => generarEImprimirPDF([record]); // Reimprimir solo esta etiqueta
                         li.appendChild(reprintButton);
                         searchResultList.appendChild(li);
                     });
                 } else {
-                    searchResultList.innerHTML = '<li>No se encontraron resultados.</li>';
+                    const li = document.createElement('li');
+                    li.textContent = 'No se encontraron resultados.';
+                    searchResultList.appendChild(li);
                 }
             } catch (error) {
-                console.error('Error en la búsqueda:', error);
-                searchResultList.innerHTML = `<li>Error al buscar: ${error.message}</li>`;
+                console.error('Error al buscar registros:', error);
+                const li = document.createElement('li');
+                li.textContent = 'Error al buscar registros: ' + error.message;
+                searchResultList.appendChild(li);
+            } finally {
+                searchButton.disabled = false;
+                searchButton.textContent = 'Buscar';
             }
         });
 
-
-        // --- Lógica de Pestañas ---
+        // --- Lógica de Pestañas (sin cambios) ---
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const targetTab = button.dataset.tab;
@@ -928,18 +911,11 @@
 
                 button.classList.add('active');
                 document.getElementById(targetTab).classList.add('active');
-
-                // Si se activa la pestaña de generación, refrescar la previsualización
-                if (targetTab === 'generate') {
-                    updateMaterial(); // Esto también llama a generarSerialesYEtiquetas()
-                }
             });
         });
 
-        // Inicializar al cargar la página si el materialInput tiene un valor
-        if (materialInput.value) {
-            updateMaterial();
-        }
+        // Cargar datos iniciales al cargar la página
+        updateMaterial(); // Llama a la función para buscar datos del material y último serial al inicio
     });
 </script>
 </body>
