@@ -234,9 +234,9 @@
             box-shadow: none;
             width: 100%;
             height: 100%;
-            /* **MODIFICADO:** No centrar verticalmente aquí, el label-container lo manejará */
+            /* No centrar verticalmente aquí, el label-container lo manejará */
             justify-content: flex-start; /* Asegura que se alinee al inicio del flexbox */
-            align-items: center; /* Centra horizontalmente, esto está bien */
+            align-items: flex-start; /* **CAMBIO: Alinea el contenido del .labels-preview a la izquierda** */
             overflow: hidden; /* Evita desbordamientos si el contenido es demasiado grande */
         }
         .labels-preview h2 {
@@ -250,9 +250,9 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            /* **MODIFICADO:** No centrar verticalmente aquí, el label-container lo manejará */
+            /* No centrar verticalmente aquí, el label-container lo manejará */
             justify-content: flex-start; /* Asegura que se alinee al inicio del flexbox */
-            align-items: center; /* Centra horizontalmente, esto está bien */
+            align-items: flex-start; /* **CAMBIO: Alinea el contenido del .labels-grid a la izquierda** */
         }
 
         .label-container {
@@ -264,12 +264,12 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start; /* Alinea el contenido en la parte superior */
-            align-items: center; /* Centra el contenido horizontalmente dentro de la etiqueta */
+            align-items: flex-start; /* **CAMBIO: Alinea el contenido horizontalmente a la izquierda dentro de la etiqueta** */
             box-sizing: border-box; /* Crucial para incluir padding/border en el tamaño total */
             page-break-after: always; /* Cada etiqueta en una nueva página */
-            padding: 1mm; /* **MODIFICADO:** Reducido el padding para más espacio. Puedes ajustar a 0mm si lo deseas */
+            padding: 1mm; /* Reducido el padding para más espacio. Puedes ajustar a 0mm si lo deseas */
             background-color: white; /* Asegurar fondo blanco */
-            text-align: center; /* Centrar el texto por defecto */
+            text-align: left; /* **CAMBIO: Alinea el texto a la izquierda por defecto** */
             overflow: hidden; /* Muy importante para que el contenido no se salga */
         }
         
@@ -278,7 +278,7 @@
             font-size: 18px; /* Reducido ligeramente para dar más espacio */
             margin: 0; 
             line-height: 1.1; /* Ajustar el interlineado */
-            text-align: center;
+            text-align: left; /* **CAMBIO: Alinea este texto a la izquierda** */
             white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
             overflow: hidden; /* Oculta cualquier texto que se desborde */
             text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es demasiado largo */
@@ -288,7 +288,7 @@
             font-size: 12px; /* Reducido para la descripción */
             margin: 1mm 0; /* Un poco de margen para separar del material y código de barras */
             line-height: 1.1;
-            text-align: center;
+            text-align: left; /* **CAMBIO: Alinea este texto a la izquierda** */
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis;
@@ -300,13 +300,15 @@
             margin: 2mm 0; /* Margen superior e inferior para el código de barras */
             display: block; /* Asegura que ocupe su propio espacio */
             overflow: hidden;
+            /* Si quieres que el código de barras también esté a la izquierda, puedes quitar margin: 0 auto; si lo tuviera */
+            /* En este caso, como el padre tiene align-items: flex-start, se irá a la izquierda */
         }
         .serial-text {
             font-size: 16px; /* Reducido ligeramente para el serial */
             font-weight: bold;
             margin: 0;
             line-height: 1.1;
-            text-align: center;
+            text-align: left; /* **CAMBIO: Alinea este texto a la izquierda** */
             word-break: break-all; /* Permite que el serial largo se rompa si es necesario */
             max-width: 100%;
             overflow: hidden;
@@ -315,12 +317,13 @@
         /* Opcional: si tienes un logo */
         .logo-kalosa {
             margin-bottom: 1mm; /* Espacio debajo del logo */
+            text-align: left; /* **CAMBIO: Asegura que el contenedor del logo se alinee a la izquierda** */
         }
         .logo-kalosa img {
             width: 20mm; /* Ajusta el tamaño del logo */
             height: auto;
             display: block;
-            margin: 0 auto; /* Centra el logo */
+            margin: 0; /* **CAMBIO: Elimina margin: 0 auto para que no se centre** */
         }
 
         /* Opcional: para el texto de CANT (ELIMINADO EN ESTA MODIFICACIÓN) */
@@ -553,7 +556,7 @@
                 });
             } catch (e) {
                 console.error("Error al generar el código de barras para serial:", serialValue, e);
-                svgElement.innerHTML = `<p style="color: red; font-size: 7px; text-align: center;">Error BC: ${serialValue}</p>`;
+                svgElement.innerHTML = `<p style="color: red; font-size: 7px; text-align: left;">Error BC: ${serialValue}</p>`; // CAMBIO: text-align: left
             }
         };
 
@@ -721,7 +724,7 @@
             format: [100, 50] // Formato de 100mm de ancho por 50mm de alto para cada etiqueta
         });
 
-        // Obtener dimensiones de la página PDF para centrado
+        // Obtener dimensiones de la página PDF
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
 
@@ -741,20 +744,15 @@
                 background-color: #fff;
                 display: flex;
                 flex-direction: column;
-                justify-content: flex-start; /* Alinea al inicio (parte superior) */
-                align-items: center; /* Centra horizontalmente */
+                justify-content: flex-start; /* **CAMBIO: Alinea al inicio (parte superior)** */
+                align-items: flex-start; /* **CAMBIO: Alinea horizontalmente a la izquierda** */
                 font-family: Arial, sans-serif;
-                text-align: center; /* Asegura que el texto esté centrado */
+                text-align: left; /* **CAMBIO: Asegura que el texto por defecto se alinee a la izquierda** */
             `;
             tempLabelDiv.innerHTML = `
-                <div class="logo-kalosa" style="margin-bottom: 1mm;">
-                    <img src="kalosa-logo.png" alt="Logo Kalosa" style="width: 20mm; height: auto; display: block; margin: 0 auto;">
-                </div>
-                <div style="font-size: 18px; font-weight: bold; margin: 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${item.material}</div>
-                <div style="font-size: 12px; margin: 1mm 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${item.descripcion}</div>
-                <svg id="tempBarcodeSvg-${i}" style="width: 85mm; height: 18mm; margin: 2mm 0; display: block; overflow: hidden;"></svg>
-                <div style="font-weight: bold; font-size: 16px; word-break: break-all; margin: 0; line-height: 1.1; max-width: 100%; overflow: hidden;">${item.serial}</div>
-                `;
+                <div class="logo-kalosa" style="margin-bottom: 1mm; text-align: left;"> <img src="kalosa-logo.png" alt="Logo Kalosa" style="width: 20mm; height: auto; display: block; margin: 0;"> </div>
+                <div style="font-size: 18px; font-weight: bold; margin: 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-align: left;"><b>${item.material}</b></div> <div style="font-size: 12px; margin: 1mm 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-align: left;">${item.descripcion}</div> <svg id="tempBarcodeSvg-${i}" style="width: 85mm; height: 18mm; margin: 2mm 0; display: block; overflow: hidden;"></svg>
+                <div style="font-weight: bold; font-size: 16px; word-break: break-all; margin: 0; line-height: 1.1; max-width: 100%; overflow: hidden; text-align: left;">${item.serial}</div> `;
             document.body.appendChild(tempLabelDiv);
 
             // Renderizar el código de barras en el SVG temporal
@@ -766,10 +764,10 @@
 
             // Capturar el contenido de la etiqueta temporal como una imagen
             const canvas = await html2canvas(tempLabelDiv, {
-                scale: 4, // Aumentar la escala para mayor resolución en el PDF (puedes probar 3, 4 o 5)
+                scale: 4, // Mantiene la escala de 4 que tenías
                 useCORS: true,
                 logging: false,
-                backgroundColor: '#fff' // Asegura que el fondo sea blanco
+                backgroundColor: '#fff' 
             });
 
             // Eliminar el div temporal
@@ -781,30 +779,32 @@
 
             const imgData = canvas.toDataURL('image/png');
             
-            // Calcular las dimensiones de la imagen ajustadas a la página del PDF
+            // Calcular las dimensiones de la imagen ajustadas para el PDF
             const imgWidth = canvas.width;
             const imgHeight = canvas.height;
 
-            // Calcular las dimensiones para que la imagen ocupe el 98% del ancho de la página PDF
-            const targetPdfWidth = pageWidth * 0.98; 
+            // Ajustar el tamaño de la imagen para que se adapte al ancho de la página del PDF
+            // y mantener la proporción. Puedes ajustar el multiplicador (ej. 0.98 para casi el 100%)
+            const targetPdfWidth = pageWidth * 0.98; // Usa casi todo el ancho de la página
             const targetPdfHeight = (targetPdfWidth / imgWidth) * imgHeight;
 
-            // Calcular las coordenadas para centrar la imagen horizontalmente y alinearla arriba
-            const x = (pageWidth - targetPdfWidth) / 2;
-            const y = 0; // **MODIFICADO:** Posicionar en la parte superior del PDF
+            // **CAMBIO: Coordenadas para posicionar la imagen en la esquina superior izquierda (0,0)**
+            const x = 0; 
+            const y = 0; 
+            // ---------------------------------------------------------------------------------
 
             doc.addImage(imgData, 'PNG', x, y, targetPdfWidth, targetPdfHeight);
         }
 
-        doc.autoPrint(); // Abre el diálogo de impresión automáticamente
-        window.open(doc.output('bloburl'), '_blank'); // Abre el PDF en una nueva pestaña
+        doc.autoPrint(); 
+        window.open(doc.output('bloburl'), '_blank'); 
 
-        // Retorna a la previsualización original después de imprimir
         generarSerialesYEtiquetas();
     };
 
         // --- Event Listeners ---
-        materialInput.addEventListener('input', updateMaterial);
+        // Se cambió de 'change' a 'input' para una actualización más dinámica
+        materialInput.addEventListener('input', updateMaterial); 
         serialManualInput.addEventListener('input', generarSerialesYEtiquetas);
         serialesPegadosInput.addEventListener('input', generarSerialesYEtiquetas);
         correlativoInicioInput.addEventListener('input', generarSerialesYEtiquetas);
