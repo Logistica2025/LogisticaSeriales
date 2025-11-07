@@ -259,66 +259,369 @@
             border: 1px solid #ccc;
             margin: 0;
             display: flex;
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Seriales y Códigos de Barras</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .container {
+      max-width: 960px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #0056b3;
+      margin-bottom: 25px;
+      font-size: 2em;
+    }
+
+    /* Estilos de Pestañas */
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .tab-button {
+      background-color: #eee;
+      border: none;
+      padding: 12px 25px;
+      cursor: pointer;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-radius: 8px 8px 0 0;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      margin: 0 2px;
+    }
+    .tab-button:hover {
+      background-color: #ddd;
+    }
+    .tab-button.active {
+      background-color: #007bff;
+      color: white;
+      border-bottom: 2px solid #007bff;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Estilos del Formulario */
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group textarea,
+    .form-group select {
+      width: calc(100% - 22px);
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+    .form-group input[readonly] {
+      background-color: #e9e9e9;
+      cursor: not-allowed;
+    }
+
+    /* Botones */
+    .button-group {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .action-button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.1em;
+      font-weight: bold;
+      margin: 0 10px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .action-button:hover {
+      transform: translateY(-2px);
+    }
+    .action-button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+    }
+    .btn-success:hover {
+      background-color: #218838;
+    }
+    .btn-info {
+      background-color: #17a2b8;
+      color: white;
+    }
+    .btn-info:hover {
+      background-color: #138496;
+    }
+
+    /* Previsualización de Etiquetas */
+    .labels-preview {
+      margin-top: 30px;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+      text-align: center;
+    }
+    .labels-preview h2 {
+      color: #0056b3;
+      margin-bottom: 20px;
+    }
+    .labels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+      justify-content: center;
+    }
+    .label-container {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      font-size: 0.9em;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 150px;
+    }
+    .label-container h4 {
+      margin: 5px 0;
+      font-size: 1.1em;
+      color: #333;
+    }
+    .label-container h5 {
+      margin: 3px 0;
+      font-size: 0.8em;
+      color: #666;
+    }
+    .barcode-svg {
+      width: 100%;
+      height: 80px;
+      margin: 5px 0;
+    }
+    .serial-text {
+      font-weight: bold;
+      font-size: 0.9em;
+      word-break: break-all;
+      margin-top: 5px;
+    }
+
+    /* Área de salida de seriales */
+    #serialsOutput {
+        width: calc(100% - 22px);
+        min-height: 100px;
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        font-family: monospace;
+        white-space: pre-wrap;
+    }
+
+    /* NUEVO: Estilos optimizados para etiqueta 100x50mm */
+    .etiqueta-impresion {
+        width: 98mm;
+        height: 48mm;
+        padding: 1mm;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+    
+    .logo-kalosa {
+        height: 8mm;
+        text-align: center;
+        margin-bottom: 1mm;
+    }
+    
+    .logo-kalosa img {
+        height: 100%;
+        width: auto;
+    }
+    
+    .material-info {
+        text-align: center;
+        width: 100%;
+        margin-bottom: 1mm;
+    }
+    
+    .material-codigo {
+        font-size: 12px;
+        font-weight: bold;
+        margin: 0;
+        line-height: 1.1;
+    }
+    
+    .material-descripcion {
+        font-size: 9px;
+        margin: 0;
+        line-height: 1.1;
+        max-height: 12mm;
+        overflow: hidden;
+    }
+    
+    .barcode-container {
+        width: 85mm;
+        height: 18mm;
+        margin: 1mm 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .serial-number {
+        font-size: 11px;
+        font-weight: bold;
+        text-align: center;
+        margin: 1mm 0 0 0;
+        line-height: 1.1;
+    }
+
+    /* Estilos para impresión */
+    @media print {
+        @page {
+            size: 100mm 50mm;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        body > *:not(.labels-preview) {
+            display: none !important;
+        }
+
+        .labels-preview {
+            display: block !important;
+            border: none;
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .labels-preview h2 {
+            display: none;
+        }
+
+        .labels-grid {
+            display: block !important; 
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .label-container {
+            width: 98mm;
+            height: 48mm;
+            border: none;
+            margin: 0;
+            display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
+            align-items: center;
+            justify-content: space-between;
             box-sizing: border-box;
             page-break-after: always;
             padding: 1mm;
             background-color: white;
-            text-align: left;
+            text-align: center;
             overflow: hidden;
         }
         
-        /* Ajustar el tamaño de fuente y márgenes dentro de la etiqueta para que todo quepa */
         .label-container h4 {
-            font-size: 16px; /* Reducido para el nuevo tamaño */
-            margin: 0; 
-            line-height: 1.1;
-            text-align: left;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
-        .label-container h5 {
-            font-size: 11px; /* Reducido para la descripción */
-            margin: 1mm 0;
-            line-height: 1.1;
-            text-align: left;
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
-        .barcode-svg {
-            width: 90mm; /* Ajustado para el nuevo ancho */
-            height: 20mm; /* Ajustado para el nuevo alto */
-            margin: 2mm 0;
-            display: block;
-            overflow: hidden;
-        }
-        .serial-text {
-            font-size: 14px; /* Reducido para el serial */
-            font-weight: bold;
+            font-size: 12px;
             margin: 0;
             line-height: 1.1;
-            text-align: left;
-            word-break: break-all;
-            max-width: 100%;
+        }
+        
+        .label-container h5 {
+            font-size: 9px;
+            margin: 0;
+            line-height: 1.1;
+            max-height: 12mm;
             overflow: hidden;
+        }
+        
+        .barcode-svg {
+            width: 85mm;
+            height: 18mm;
+            margin: 1mm 0;
+        }
+        
+        .serial-text {
+            font-size: 11px;
+            margin: 0;
+            line-height: 1.1;
         }
 
-        /* Logo */
         .logo-kalosa {
+            height: 8mm;
             margin-bottom: 1mm;
-            text-align: left;
         }
+        
         .logo-kalosa img {
-            width: 18mm; /* Ajustado para el nuevo tamaño */
-            height: auto;
-            display: block;
-            margin: 0;
+            height: 100%;
+            width: auto;
         }
     }
   </style>
@@ -405,7 +708,6 @@
     </div>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- Referencias del DOM para la sección de Generación ---
         const materialInput = document.getElementById('material');
         const descripcionInput = document.getElementById('descripcion');
         const umInput = document.getElementById('um');
@@ -418,17 +720,14 @@
         const labelsPreviewContainer = document.getElementById('labelsPreviewContainer');
         const serialsOutput = document.getElementById('serialsOutput');
 
-        // --- Referencias del DOM para la sección de Búsqueda ---
         const searchSerialInput = document.getElementById('searchSerialInput');
         const searchMaterialInput = document.getElementById('searchMaterialInput');
         const searchButton = document.getElementById('searchButton');
         const searchResultList = document.getElementById('searchResultList');
 
-        // --- Referencias de las Pestañas ---
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        // --- URL de Google Apps Script ---
         const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8MRwE-QRucfIf1gxTmrQ2TrdYisRZzncWaoQLaYy1m2TYutW6iQ6oeVFA-vOh00BIuQ/exec';
 
         let generatedSerialsInSession = [];
@@ -505,6 +804,7 @@
             }
         };
 
+        // NUEVA FUNCIÓN: Crear etiqueta optimizada para impresión
         const createLabelHtml = (material, descripcion, um, serial) => {
             const labelDiv = document.createElement('div');
             labelDiv.className = 'label-container';
@@ -512,9 +812,13 @@
                 <div class="logo-kalosa">
                     <img src="kalosa-logo.png" alt="Logo Kalosa">
                 </div>
-                <h4>${material}</h4>
-                <h5>${descripcion}</h5>
-                <svg class="barcode-svg" data-serial="${serial}"></svg>
+                <div class="material-info">
+                    <h4 class="material-codigo">${material}</h4>
+                    <h5 class="material-descripcion">${descripcion}</h5>
+                </div>
+                <div class="barcode-container">
+                    <svg class="barcode-svg" data-serial="${serial}"></svg>
+                </div>
                 <p class="serial-text">${serial}</p>
             `;
             return labelDiv;
@@ -526,14 +830,14 @@
                     format: "CODE128",
                     displayValue: false,
                     lineColor: "#000",
-                    width: 2,
-                    height: 50,
+                    width: 1.8, // Ajustado para mejor tamaño en 85mm
+                    height: 35,  // Ajustado para mejor tamaño en 18mm
                     margin: 0,
                     background: "#fff"
                 });
             } catch (e) {
                 console.error("Error al generar el código de barras para serial:", serialValue, e);
-                svgElement.innerHTML = `<p style="color: red; font-size: 7px; text-align: left;">Error BC: ${serialValue}</p>`;
+                svgElement.innerHTML = `<text x="5" y="15" font-family="Arial" font-size="10" fill="red">Error: ${serialValue}</text>`;
             }
         };
 
@@ -675,7 +979,7 @@
             }
         };
 
-        // MODIFICACIÓN PRINCIPAL: Función de impresión corregida para Zebra ZD421
+        // FUNCIÓN DE IMPRESIÓN OPTIMIZADA
         const generarEImprimirPDF = async (serialsData) => {
             if (serialsData.length === 0) {
                 alert('No hay seriales para imprimir.');
@@ -683,11 +987,10 @@
             }
 
             const { jsPDF } = window.jspdf;
-            // CORREGIDO: Tamaño correcto para Zebra ZD421
             const doc = new jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
-                format: [104, 60] // 104mm x 60mm para Zebra ZD421
+                format: [100, 50] // Exactamente 100x50mm
             });
 
             const pageWidth = doc.internal.pageSize.getWidth();
@@ -696,32 +999,35 @@
             for (let i = 0; i < serialsData.length; i++) {
                 const item = serialsData[i];
 
-                // Crear contenedor temporal con tamaño corregido
+                // Crear contenedor temporal con las dimensiones exactas
                 const tempLabelDiv = document.createElement('div');
                 tempLabelDiv.style.cssText = `
                     position: absolute;
                     left: -9999px;
                     top: -9999px;
-                    width: 102mm; /* Ajustado para 104mm */
-                    height: 58mm; /* Ajustado para 60mm */
+                    width: 98mm;
+                    height: 48mm;
                     padding: 1mm;
-                    box-sizing: border-box;
-                    background-color: #fff;
+                    background: white;
                     display: flex;
                     flex-direction: column;
-                    justify-content: flex-start;
-                    align-items: flex-start;
+                    align-items: center;
+                    justify-content: space-between;
+                    box-sizing: border-box;
                     font-family: Arial, sans-serif;
-                    text-align: left;
                 `;
                 tempLabelDiv.innerHTML = `
-                    <div class="logo-kalosa" style="margin-bottom: 1mm; text-align: left;"> 
-                        <img src="kalosa-logo.png" alt="Logo Kalosa" style="width: 18mm; height: auto; display: block; margin: 0;"> 
+                    <div class="logo-kalosa" style="height: 8mm; text-align: center; margin-bottom: 1mm;">
+                        <img src="kalosa-logo.png" alt="Logo Kalosa" style="height: 100%; width: auto;">
                     </div>
-                    <div style="font-size: 16px; font-weight: bold; margin: 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-align: left;"><b>${item.material}</b></div> 
-                    <div style="font-size: 11px; margin: 1mm 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-align: left;">${item.descripcion}</div> 
-                    <svg id="tempBarcodeSvg-${i}" style="width: 90mm; height: 20mm; margin: 2mm 0; display: block; overflow: hidden;"></svg>
-                    <div style="font-weight: bold; font-size: 14px; word-break: break-all; margin: 0; line-height: 1.1; max-width: 100%; overflow: hidden; text-align: left;">${item.serial}</div> 
+                    <div style="text-align: center; width: 100%; margin-bottom: 1mm;">
+                        <div style="font-size: 12px; font-weight: bold; margin: 0; line-height: 1.1;">${item.material}</div>
+                        <div style="font-size: 9px; margin: 0; line-height: 1.1; max-height: 12mm; overflow: hidden;">${item.descripcion}</div>
+                    </div>
+                    <div style="width: 85mm; height: 18mm; margin: 1mm 0; display: flex; justify-content: center; align-items: center;">
+                        <svg id="tempBarcodeSvg-${i}" style="width: 85mm; height: 18mm;"></svg>
+                    </div>
+                    <div style="font-size: 11px; font-weight: bold; text-align: center; margin: 1mm 0 0 0; line-height: 1.1;">${item.serial}</div>
                 `;
                 document.body.appendChild(tempLabelDiv);
 
@@ -733,10 +1039,10 @@
 
                 // Capturar como imagen
                 const canvas = await html2canvas(tempLabelDiv, {
-                    scale: 4,
+                    scale: 3, // Reducido a 3 para mejor rendimiento
                     useCORS: true,
                     logging: false,
-                    backgroundColor: '#fff' 
+                    backgroundColor: '#ffffff'
                 });
 
                 document.body.removeChild(tempLabelDiv);
@@ -745,26 +1051,20 @@
                     doc.addPage();
                 }
 
-                const imgData = canvas.toDataURL('image/png');
+                const imgData = canvas.toDataURL('image/png', 1.0);
                 
-                const imgWidth = canvas.width;
-                const imgHeight = canvas.height;
-
-                // Ajustar imagen al tamaño de la página
-                const targetPdfWidth = pageWidth * 0.98;
-                const targetPdfHeight = (targetPdfWidth / imgWidth) * imgHeight;
-
-                const x = 0; 
-                const y = 0;
-
-                doc.addImage(imgData, 'PNG', x, y, targetPdfWidth, targetPdfHeight);
+                // Usar toda la página sin escalado
+                doc.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
             }
 
-            doc.autoPrint(); 
-            window.open(doc.output('bloburl'), '_blank'); 
+            doc.autoPrint();
+            // Abrir en nueva ventana para imprimir
+            const pdfBlob = doc.output('blob');
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            window.open(pdfUrl, '_blank');
         };
 
-        // --- Event Listeners ---
+        // Event Listeners
         materialInput.addEventListener('input', updateMaterial); 
         serialManualInput.addEventListener('input', generarSerialesYEtiquetas);
         serialesPegadosInput.addEventListener('input', generarSerialesYEtiquetas);
@@ -808,7 +1108,7 @@
             }
         });
 
-        // --- Lógica para Búsqueda ---
+        // Lógica para Búsqueda
         searchButton.addEventListener('click', async () => {
             const searchSerial = searchSerialInput.value.trim();
             const searchMaterial = searchMaterialInput.value.trim();
@@ -860,7 +1160,7 @@
             }
         });
 
-        // --- Lógica de Pestañas ---
+        // Lógica de Pestañas
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const targetTab = button.dataset.tab;
@@ -873,7 +1173,7 @@
             });
         });
 
-        // Cargar datos iniciales al cargar la página
+        // Cargar datos iniciales
         updateMaterial();
     });
 </script>
