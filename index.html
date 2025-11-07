@@ -209,7 +209,7 @@
     /* Estilos para impresión */
     @media print {
         @page {
-            size: 100mm 50mm; /* Define el tamaño de la página a 100mm x 50mm (ancho x alto) */
+            size: 104mm 60mm; /* CORREGIDO: Tamaño exacto para Zebra ZD421 */
             margin: 0; /* Elimina todos los márgenes predeterminados de la impresora */
         }
 
@@ -234,106 +234,92 @@
             box-shadow: none;
             width: 100%;
             height: 100%;
-            /* No centrar verticalmente aquí, el label-container lo manejará */
-            justify-content: flex-start; /* Asegura que se alinee al inicio del flexbox */
-            align-items: flex-start; /* **CAMBIO: Alinea el contenido del .labels-preview a la izquierda** */
-            overflow: hidden; /* Evita desbordamientos si el contenido es demasiado grande */
+            justify-content: flex-start;
+            align-items: flex-start;
+            overflow: hidden;
         }
         .labels-preview h2 {
             display: none; /* Ocultar el título "Previsualización de Etiquetas" al imprimir */
         }
 
         .labels-grid {
-            /* Para impresión, mostramos solo una etiqueta por página, así que no necesitamos el grid */
             display: block !important; 
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            /* No centrar verticalmente aquí, el label-container lo manejará */
-            justify-content: flex-start; /* Asegura que se alinee al inicio del flexbox */
-            align-items: flex-start; /* **CAMBIO: Alinea el contenido del .labels-grid a la izquierda** */
+            justify-content: flex-start;
+            align-items: flex-start;
         }
 
         .label-container {
-            /* La etiqueta real, ahora con el tamaño deseado de 100x50mm */
-            width: 98mm; /* Ajustado ligeramente menor que 100mm para compensar posibles bordes de impresora */
-            height: 48mm; /* Ajustado ligeramente menor que 50mm para compensar posibles bordes de impresora */
-            border: 1px solid #ccc; /* Puedes quitar este borde si no lo necesitas en la impresión final */
-            margin: 0; /* Sin márgenes entre etiquetas, ya que cada una estará en su propia página */
+            /* CORREGIDO: Tamaño ajustado para 104x60mm */
+            width: 102mm; /* Ligeramente menor que 104mm para compensar bordes */
+            height: 58mm; /* Ligeramente menor que 60mm para compensar bordes */
+            border: 1px solid #ccc;
+            margin: 0;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Alinea el contenido en la parte superior */
-            align-items: flex-start; /* **CAMBIO: Alinea el contenido horizontalmente a la izquierda dentro de la etiqueta** */
-            box-sizing: border-box; /* Crucial para incluir padding/border en el tamaño total */
-            page-break-after: always; /* Cada etiqueta en una nueva página */
-            padding: 1mm; /* Reducido el padding para más espacio. Puedes ajustar a 0mm si lo deseas */
-            background-color: white; /* Asegurar fondo blanco */
-            text-align: left; /* **CAMBIO: Alinea el texto a la izquierda por defecto** */
-            overflow: hidden; /* Muy importante para que el contenido no se salga */
+            justify-content: flex-start;
+            align-items: flex-start;
+            box-sizing: border-box;
+            page-break-after: always;
+            padding: 1mm;
+            background-color: white;
+            text-align: left;
+            overflow: hidden;
         }
         
         /* Ajustar el tamaño de fuente y márgenes dentro de la etiqueta para que todo quepa */
         .label-container h4 {
-            font-size: 18px; /* Reducido ligeramente para dar más espacio */
+            font-size: 16px; /* Reducido para el nuevo tamaño */
             margin: 0; 
-            line-height: 1.1; /* Ajustar el interlineado */
-            text-align: left; /* **CAMBIO: Alinea este texto a la izquierda** */
-            white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
-            overflow: hidden; /* Oculta cualquier texto que se desborde */
-            text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es demasiado largo */
-            max-width: 100%; /* Asegura que no se desborde el contenedor */
+            line-height: 1.1;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
         .label-container h5 {
-            font-size: 12px; /* Reducido para la descripción */
-            margin: 1mm 0; /* Un poco de margen para separar del material y código de barras */
+            font-size: 11px; /* Reducido para la descripción */
+            margin: 1mm 0;
             line-height: 1.1;
-            text-align: left; /* **CAMBIO: Alinea este texto a la izquierda** */
+            text-align: left;
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis;
             max-width: 100%;
         }
         .barcode-svg {
-            width: 85mm; /* Ancho del código de barras, ajustado para dejar márgenes */
-            height: 18mm; /* Altura del código de barras */
-            margin: 2mm 0; /* Margen superior e inferior para el código de barras */
-            display: block; /* Asegura que ocupe su propio espacio */
+            width: 90mm; /* Ajustado para el nuevo ancho */
+            height: 20mm; /* Ajustado para el nuevo alto */
+            margin: 2mm 0;
+            display: block;
             overflow: hidden;
-            /* Si quieres que el código de barras también esté a la izquierda, puedes quitar margin: 0 auto; si lo tuviera */
-            /* En este caso, como el padre tiene align-items: flex-start, se irá a la izquierda */
         }
         .serial-text {
-            font-size: 16px; /* Reducido ligeramente para el serial */
+            font-size: 14px; /* Reducido para el serial */
             font-weight: bold;
             margin: 0;
             line-height: 1.1;
-            text-align: left; /* **CAMBIO: Alinea este texto a la izquierda** */
-            word-break: break-all; /* Permite que el serial largo se rompa si es necesario */
+            text-align: left;
+            word-break: break-all;
             max-width: 100%;
             overflow: hidden;
         }
 
-        /* Opcional: si tienes un logo */
+        /* Logo */
         .logo-kalosa {
-            margin-bottom: 1mm; /* Espacio debajo del logo */
-            text-align: left; /* **CAMBIO: Asegura que el contenedor del logo se alinee a la izquierda** */
+            margin-bottom: 1mm;
+            text-align: left;
         }
         .logo-kalosa img {
-            width: 20mm; /* Ajusta el tamaño del logo */
+            width: 18mm; /* Ajustado para el nuevo tamaño */
             height: auto;
             display: block;
-            margin: 0; /* **CAMBIO: Elimina margin: 0 auto para que no se centre** */
+            margin: 0;
         }
-
-        /* Opcional: para el texto de CANT (ELIMINADO EN ESTA MODIFICACIÓN) */
-        /*
-        .cantidad-etiqueta {
-            font-size: 12px;
-            margin-top: 1mm;
-            text-align: center;
-        }
-        */
     }
   </style>
 </head>
@@ -418,11 +404,9 @@
         </div>
     </div>
 <script>
-    // --- JAVASCRIPT INCORPORADO ---
     document.addEventListener('DOMContentLoaded', () => {
         // --- Referencias del DOM para la sección de Generación ---
-        // Eliminados: nomenclaturaInput, codigoInput
-        const materialInput = document.getElementById('material'); // Este campo ahora será de entrada directa
+        const materialInput = document.getElementById('material');
         const descripcionInput = document.getElementById('descripcion');
         const umInput = document.getElementById('um');
         const serialManualInput = document.getElementById('serialManual');
@@ -432,7 +416,7 @@
         const generateAndSaveButton = document.getElementById('generateAndSaveButton');
         const generateAndPrintButton = document.getElementById('generateAndPrintButton');
         const labelsPreviewContainer = document.getElementById('labelsPreviewContainer');
-        const serialsOutput = document.getElementById('serialsOutput'); // Para mostrar seriales generados en sesión
+        const serialsOutput = document.getElementById('serialsOutput');
 
         // --- Referencias del DOM para la sección de Búsqueda ---
         const searchSerialInput = document.getElementById('searchSerialInput');
@@ -444,22 +428,19 @@
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        // --- URL de Google Apps Script (¡ACTUALIZA ESTA!) ---
-        const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8MRwE-QRucfIf1gxTmrQ2TrdYisRZzncWaoQLaYy1m2TYutW6iQ6oeVFA-vOh00BIuQ/exec'; // Asegúrate de que esta URL sea la correcta y esté desplegada.
+        // --- URL de Google Apps Script ---
+        const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby8MRwE-QRucfIf1gxTmrQ2TrdYisRZzncWaoQLaYy1m2TYutW6iQ6oeVFA-vOh00BIuQ/exec';
 
-        let generatedSerialsInSession = []; // Array para guardar los seriales generados en la sesión actual
+        let generatedSerialsInSession = [];
 
         // --- Funciones de Utilidad ---
 
-        // Función para actualizar los datos de Material, Descripción y UM.
-        // Ahora solo dispara la búsqueda de datos del material.
         const updateMaterial = () => {
             buscarDatosMaterial();
-            buscarUltimoSerial(); // Buscar el último serial generado para este material
-            generarSerialesYEtiquetas(); // Para refrescar la previsualización si el material cambia
+            buscarUltimoSerial();
+            generarSerialesYEtiquetas();
         };
 
-        // Función para buscar Descripción y UM en Google Sheets
         const buscarDatosMaterial = async () => {
             const materialABuscar = materialInput.value.trim();
 
@@ -495,7 +476,6 @@
             }
         };
 
-        // Función para buscar el último serial registrado para el Material actual
         const buscarUltimoSerial = async () => {
             const materialABuscar = materialInput.value.trim();
             serialManualInput.placeholder = 'Cargando último serial...';
@@ -516,7 +496,7 @@
                     serialManualInput.placeholder = `Último: ${data.lastSerial}`;
                 } else {
                     serialManualInput.value = '';
-                    serialManualInput.placeholder = 'Ej: NS270520250001'; // O ningún serial previo
+                    serialManualInput.placeholder = 'Ej: NS270520250001';
                 }
             } catch (error) {
                 console.error('Error al buscar último serial:', error);
@@ -525,7 +505,6 @@
             }
         };
 
-        // Función para generar una única etiqueta HTML
         const createLabelHtml = (material, descripcion, um, serial) => {
             const labelDiv = document.createElement('div');
             labelDiv.className = 'label-container';
@@ -537,48 +516,43 @@
                 <h5>${descripcion}</h5>
                 <svg class="barcode-svg" data-serial="${serial}"></svg>
                 <p class="serial-text">${serial}</p>
-                
             `;
             return labelDiv;
         };
 
-        // Función para renderizar el código de barras en un SVG
         const renderBarcodeSvg = (svgElement, serialValue) => {
             try {
                 JsBarcode(svgElement, serialValue, {
                     format: "CODE128",
-                    displayValue: false, // No mostrar el texto del serial debajo del código
+                    displayValue: false,
                     lineColor: "#000",
                     width: 2,
                     height: 50,
-                    margin: 0, // Sin márgenes adicionales
+                    margin: 0,
                     background: "#fff"
                 });
             } catch (e) {
                 console.error("Error al generar el código de barras para serial:", serialValue, e);
-                svgElement.innerHTML = `<p style="color: red; font-size: 7px; text-align: left;">Error BC: ${serialValue}</p>`; // CAMBIO: text-align: left
+                svgElement.innerHTML = `<p style="color: red; font-size: 7px; text-align: left;">Error BC: ${serialValue}</p>`;
             }
         };
 
-        // Función principal para generar seriales y previsualizar etiquetas
         const generarSerialesYEtiquetas = () => {
             const material = materialInput.value.trim();
             const descripcion = descripcionInput.value.trim();
             const um = umInput.value.trim();
 
-            // Validar que Material, Descripción y UM estén cargados
             if (!material || !descripcion || !um ||
                 descripcion.includes('Buscando') || descripcion.includes('Error')) {
-                // No mostrar alert aquí, simplemente limpiar la previsualización
                 labelsPreviewContainer.innerHTML = '';
                 serialsOutput.textContent = '';
                 generatedSerialsInSession = [];
-                return []; // Retorna un array vacío si los datos no son válidos
+                return [];
             }
 
-            labelsPreviewContainer.innerHTML = ''; // Limpiar previsualización anterior
+            labelsPreviewContainer.innerHTML = '';
             const serialsToProcess = [];
-            generatedSerialsInSession = []; // Limpiar la lista de seriales generados en sesión
+            generatedSerialsInSession = [];
 
             // 1. Serial Individual
             const serialManual = serialManualInput.value.trim();
@@ -598,7 +572,6 @@
             const correlativoCantidad = parseInt(correlativoCantidadInput.value, 10);
 
             if (correlativoInicio && correlativoCantidad > 0) {
-                // Lógica para extraer la parte numérica final y el prefijo/sufijo
                 const match = correlativoInicio.match(/^(.*?)([0-9]+)([^0-9]*)$/);
                 if (match) {
                     const prefix = match[1];
@@ -617,14 +590,11 @@
             }
 
             if (serialsToProcess.length === 0) {
-                // No alert, simplemente no hay nada que previsualizar
                 return [];
             }
 
-            // Eliminar duplicados si es necesario (opcional, dependiendo de la lógica de negocio)
             const uniqueSerials = [...new Set(serialsToProcess)];
 
-            // Generar previsualización y registrar para la sesión
             uniqueSerials.forEach(serial => {
                 const labelHtml = createLabelHtml(material, descripcion, um, serial);
                 labelsPreviewContainer.appendChild(labelHtml);
@@ -636,25 +606,21 @@
                 });
             });
 
-            // Renderizar todos los códigos de barras después de que los SVG estén en el DOM
             labelsPreviewContainer.querySelectorAll('.barcode-svg').forEach(svg => {
                 renderBarcodeSvg(svg, svg.dataset.serial);
             });
 
-            // Mostrar seriales generados en el área de texto
             serialsOutput.textContent = uniqueSerials.join('\n');
 
-            return generatedSerialsInSession; // Retorna los seriales con sus datos completos
+            return generatedSerialsInSession;
         };
 
-        // Función para enviar datos a la hoja de "Registros" (ahora maneja múltiples seriales)
         const enviarDatosARegistros = async (serialsToRegister) => {
             if (serialsToRegister.length === 0) {
                 alert('No hay seriales para registrar.');
                 return false;
             }
 
-            // Validaciones adicionales antes de enviar (por si algo cambió desde la generación)
             const material = materialInput.value.trim();
             const descripcion = descripcionInput.value.trim();
             const um = umInput.value.trim();
@@ -665,7 +631,6 @@
                 return false;
             }
 
-            // Asegurarse de que cada objeto en serialsToRegister tenga todos los campos
             const completeData = serialsToRegister.map(s => ({
                 material: s.material,
                 descripcion: s.descripcion,
@@ -684,7 +649,7 @@
                     headers: {
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ action: 'registerSerials', data: completeData }) // Enviar un array de objetos
+                    body: JSON.stringify({ action: 'registerSerials', data: completeData })
                 });
 
                 if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
@@ -710,100 +675,96 @@
             }
         };
 
-   // MODIFICACIÓN PRINCIPAL AQUÍ: generarEImprimirPDF usando html2canvas y jsPDF
-   const generarEImprimirPDF = async (serialsData) => {
-        if (serialsData.length === 0) {
-            alert('No hay seriales para imprimir.');
-            return;
-        }
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: [100, 50] // Formato de 100mm de ancho por 50mm de alto para cada etiqueta
-        });
-
-        // Obtener dimensiones de la página PDF
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-
-        for (let i = 0; i < serialsData.length; i++) {
-            const item = serialsData[i];
-
-            // Crear un contenedor temporal para renderizar la etiqueta con los estilos deseados para html2canvas
-            const tempLabelDiv = document.createElement('div');
-            tempLabelDiv.style.cssText = `
-                position: absolute;
-                left: -9999px;
-                top: -9999px;
-                width: 98mm; /* Ancho similar al tamaño final de la etiqueta */
-                height: 48mm; /* Alto similar al tamaño final de la etiqueta */
-                padding: 1mm; /* **MODIFICADO:** Reducido para mayor control */
-                box-sizing: border-box;
-                background-color: #fff;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start; /* **CAMBIO: Alinea al inicio (parte superior)** */
-                align-items: flex-start; /* **CAMBIO: Alinea horizontalmente a la izquierda** */
-                font-family: Arial, sans-serif;
-                text-align: left; /* **CAMBIO: Asegura que el texto por defecto se alinee a la izquierda** */
-            `;
-            tempLabelDiv.innerHTML = `
-                <div class="logo-kalosa" style="margin-bottom: 1mm; text-align: left;"> <img src="kalosa-logo.png" alt="Logo Kalosa" style="width: 20mm; height: auto; display: block; margin: 0;"> </div>
-                <div style="font-size: 18px; font-weight: bold; margin: 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-align: left;"><b>${item.material}</b></div> <div style="font-size: 12px; margin: 1mm 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-align: left;">${item.descripcion}</div> <svg id="tempBarcodeSvg-${i}" style="width: 85mm; height: 18mm; margin: 2mm 0; display: block; overflow: hidden;"></svg>
-                <div style="font-weight: bold; font-size: 16px; word-break: break-all; margin: 0; line-height: 1.1; max-width: 100%; overflow: hidden; text-align: left;">${item.serial}</div> `;
-            document.body.appendChild(tempLabelDiv);
-
-            // Renderizar el código de barras en el SVG temporal
-            const tempSvgElement = document.getElementById(`tempBarcodeSvg-${i}`);
-            renderBarcodeSvg(tempSvgElement, item.serial);
-
-            // Esperar a que el SVG sea renderizado por JsBarcode antes de capturar con html2canvas
-            await new Promise(resolve => setTimeout(resolve, 200)); // Retardo aumentado para mayor seguridad y rendering
-
-            // Capturar el contenido de la etiqueta temporal como una imagen
-            const canvas = await html2canvas(tempLabelDiv, {
-                scale: 4, // Mantiene la escala de 4 que tenías
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#fff' 
-            });
-
-            // Eliminar el div temporal
-            document.body.removeChild(tempLabelDiv);
-
-            if (i > 0) {
-                doc.addPage();
+        // MODIFICACIÓN PRINCIPAL: Función de impresión corregida para Zebra ZD421
+        const generarEImprimirPDF = async (serialsData) => {
+            if (serialsData.length === 0) {
+                alert('No hay seriales para imprimir.');
+                return;
             }
 
-            const imgData = canvas.toDataURL('image/png');
-            
-            // Calcular las dimensiones de la imagen ajustadas para el PDF
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
+            const { jsPDF } = window.jspdf;
+            // CORREGIDO: Tamaño correcto para Zebra ZD421
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: [104, 60] // 104mm x 60mm para Zebra ZD421
+            });
 
-            // Ajustar el tamaño de la imagen para que se adapte al ancho de la página del PDF
-            // y mantener la proporción. Puedes ajustar el multiplicador (ej. 0.98 para casi el 100%)
-            const targetPdfWidth = pageWidth * 0.98; // Usa casi todo el ancho de la página
-            const targetPdfHeight = (targetPdfWidth / imgWidth) * imgHeight;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
 
-            // **CAMBIO: Coordenadas para posicionar la imagen en la esquina superior izquierda (0,0)**
-            const x = 0; 
-            const y = 0; 
-            // ---------------------------------------------------------------------------------
+            for (let i = 0; i < serialsData.length; i++) {
+                const item = serialsData[i];
 
-            doc.addImage(imgData, 'PNG', x, y, targetPdfWidth, targetPdfHeight);
-        }
+                // Crear contenedor temporal con tamaño corregido
+                const tempLabelDiv = document.createElement('div');
+                tempLabelDiv.style.cssText = `
+                    position: absolute;
+                    left: -9999px;
+                    top: -9999px;
+                    width: 102mm; /* Ajustado para 104mm */
+                    height: 58mm; /* Ajustado para 60mm */
+                    padding: 1mm;
+                    box-sizing: border-box;
+                    background-color: #fff;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    font-family: Arial, sans-serif;
+                    text-align: left;
+                `;
+                tempLabelDiv.innerHTML = `
+                    <div class="logo-kalosa" style="margin-bottom: 1mm; text-align: left;"> 
+                        <img src="kalosa-logo.png" alt="Logo Kalosa" style="width: 18mm; height: auto; display: block; margin: 0;"> 
+                    </div>
+                    <div style="font-size: 16px; font-weight: bold; margin: 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-align: left;"><b>${item.material}</b></div> 
+                    <div style="font-size: 11px; margin: 1mm 0; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-align: left;">${item.descripcion}</div> 
+                    <svg id="tempBarcodeSvg-${i}" style="width: 90mm; height: 20mm; margin: 2mm 0; display: block; overflow: hidden;"></svg>
+                    <div style="font-weight: bold; font-size: 14px; word-break: break-all; margin: 0; line-height: 1.1; max-width: 100%; overflow: hidden; text-align: left;">${item.serial}</div> 
+                `;
+                document.body.appendChild(tempLabelDiv);
 
-        doc.autoPrint(); 
-        window.open(doc.output('bloburl'), '_blank'); 
+                // Renderizar código de barras
+                const tempSvgElement = document.getElementById(`tempBarcodeSvg-${i}`);
+                renderBarcodeSvg(tempSvgElement, item.serial);
 
-        generarSerialesYEtiquetas();
-    };
+                await new Promise(resolve => setTimeout(resolve, 200));
+
+                // Capturar como imagen
+                const canvas = await html2canvas(tempLabelDiv, {
+                    scale: 4,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#fff' 
+                });
+
+                document.body.removeChild(tempLabelDiv);
+
+                if (i > 0) {
+                    doc.addPage();
+                }
+
+                const imgData = canvas.toDataURL('image/png');
+                
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+
+                // Ajustar imagen al tamaño de la página
+                const targetPdfWidth = pageWidth * 0.98;
+                const targetPdfHeight = (targetPdfWidth / imgWidth) * imgHeight;
+
+                const x = 0; 
+                const y = 0;
+
+                doc.addImage(imgData, 'PNG', x, y, targetPdfWidth, targetPdfHeight);
+            }
+
+            doc.autoPrint(); 
+            window.open(doc.output('bloburl'), '_blank'); 
+        };
 
         // --- Event Listeners ---
-        // Se cambió de 'change' a 'input' para una actualización más dinámica
         materialInput.addEventListener('input', updateMaterial); 
         serialManualInput.addEventListener('input', generarSerialesYEtiquetas);
         serialesPegadosInput.addEventListener('input', generarSerialesYEtiquetas);
@@ -814,7 +775,6 @@
             const serials = generarSerialesYEtiquetas();
             if (serials.length > 0) {
                 await enviarDatosARegistros(serials);
-                // Si se guardó, puedes limpiar los campos si deseas
                 serialManualInput.value = '';
                 serialesPegadosInput.value = '';
                 correlativoInicioInput.value = '';
@@ -822,7 +782,7 @@
                 labelsPreviewContainer.innerHTML = '';
                 serialsOutput.textContent = '';
                 generatedSerialsInSession = [];
-                buscarUltimoSerial(); // Actualizar el serial manual con el último después de guardar
+                buscarUltimoSerial();
             } else {
                 alert('No hay seriales generados para guardar. Por favor, ingresa los datos primero.');
             }
@@ -831,10 +791,9 @@
         generateAndPrintButton.addEventListener('click', async () => {
             const serials = generarSerialesYEtiquetas();
             if (serials.length > 0) {
-                const saved = await enviarDatosARegistros(serials); // Guardar antes de imprimir
+                const saved = await enviarDatosARegistros(serials);
                 if (saved) {
                     await generarEImprimirPDF(serials);
-                    // Si se imprimió, puedes limpiar los campos si deseas
                     serialManualInput.value = '';
                     serialesPegadosInput.value = '';
                     correlativoInicioInput.value = '';
@@ -842,18 +801,18 @@
                     labelsPreviewContainer.innerHTML = '';
                     serialsOutput.textContent = '';
                     generatedSerialsInSession = [];
-                    buscarUltimoSerial(); // Actualizar el serial manual con el último después de imprimir
+                    buscarUltimoSerial();
                 }
             } else {
                 alert('No hay seriales generados para imprimir. Por favor, ingresa los datos primero.');
             }
         });
 
-        // --- Lógica para Búsqueda (sin cambios) ---
+        // --- Lógica para Búsqueda ---
         searchButton.addEventListener('click', async () => {
             const searchSerial = searchSerialInput.value.trim();
             const searchMaterial = searchMaterialInput.value.trim();
-            searchResultList.innerHTML = ''; // Limpiar resultados anteriores
+            searchResultList.innerHTML = '';
 
             if (!searchSerial && !searchMaterial) {
                 alert('Por favor, ingresa un serial o un material para buscar.');
@@ -881,7 +840,7 @@
                         reprintButton.textContent = 'Reimprimir';
                         reprintButton.className = 'action-button btn-info';
                         reprintButton.style.marginLeft = '10px';
-                        reprintButton.onclick = () => generarEImprimirPDF([record]); // Reimprimir solo esta etiqueta
+                        reprintButton.onclick = () => generarEImprimirPDF([record]);
                         li.appendChild(reprintButton);
                         searchResultList.appendChild(li);
                     });
@@ -901,7 +860,7 @@
             }
         });
 
-        // --- Lógica de Pestañas (sin cambios) ---
+        // --- Lógica de Pestañas ---
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const targetTab = button.dataset.tab;
@@ -915,7 +874,7 @@
         });
 
         // Cargar datos iniciales al cargar la página
-        updateMaterial(); // Llama a la función para buscar datos del material y último serial al inicio
+        updateMaterial();
     });
 </script>
 </body>
